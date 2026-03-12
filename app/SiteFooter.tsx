@@ -50,7 +50,7 @@ export default function SiteFooter() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-neutral-300 transition hover:text-white"
+                      className="text-neutral-300 transition hover:text-white hover:underline"
                     >
                       {link.label}
                     </Link>

@@ -35,7 +35,7 @@ export default function ProductActions({
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
-                  className={`h-10 w-12 mb-8 rounded border text-sm font-medium transition
+                  className={`h-10 w-12 mb-8 cursor-pointer rounded border text-sm font-medium transition
                     ${
                       selected
                         ? "border-black bg-black text-white"
@@ -68,7 +68,7 @@ export default function ProductActions({
         <button
           onClick={() => toggleFav(productId)}
           aria-label={isFav ? "Remove from favourites" : "Add to favourites"}
-          className="flex h-14 w-14 mb-8  cursor-pointer items-center justify-center rounded-md border border-gray-300 transition hover:bg-gray-100"
+          className="flex h-14 w-14 mb-8 cursor-pointer items-center justify-center rounded-md border border-gray-300 transition hover:bg-gray-100"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
