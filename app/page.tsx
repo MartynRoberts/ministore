@@ -17,8 +17,8 @@ export default async function HomePage() {
   const products = await api.getProducts();
 
   const categories = Array.from(
-    new Set(products.map((p: any) => p.category))
-  ).sort();
+    new Set(products.map((p: any) => p.category as string))
+  ).sort() as string[];
 
   const topSellers = products.slice(0, 6);
 
