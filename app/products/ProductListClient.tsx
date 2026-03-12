@@ -43,7 +43,7 @@ export default function ProductListClient({ products }: Props) {
         <CategoryFilter
           categories={categories}
           value={category}
-          onChange={(value) => updateParam("category", value)}
+          onChange={(value: string) => updateParam("category", value)}
         />
 
         <p className="m-0 opacity-80">{resultsCount} results</p>
@@ -66,7 +66,7 @@ export default function ProductListClient({ products }: Props) {
         <ProductSortSelect
           sortOptions={sortOptions}
           value={sort}
-          onChange={(value) => updateParam("sort", value)}
+          onChange={(value: string) => updateParam("sort", value)}
         />
       </div>
 

@@ -1,22 +1,30 @@
 type PaginationProps = {
   page: number;
   totalPages: number;
-  updateParam: (key: string, value?: string, options?: { replace?: boolean }) => void;
+  updateParam: (
+    key: string,
+    value?: string,
+    options?: { replace?: boolean }
+  ) => void;
 };
 
-export default function Pagination({ page, totalPages, updateParam }: PaginationProps) {
+export default function Pagination({
+  page,
+  totalPages,
+  updateParam,
+}: PaginationProps) {
   if (totalPages <= 1) return null;
 
-  const changePage = (n) => {
+  const changePage = (n: number) => {
     if (n >= 1 && n <= totalPages) {
       updateParam("page", String(n));
     }
   };
 
-  const getVisiblePages = () => {
-    const pages = [];
+  const getVisiblePages = (): Array<number | "..."> => {
+    const pages: Array<number | "..."> = [];
 
-    const delta = 1; // how many pages around current
+    const delta = 1;
 
     const start = Math.max(2, page - delta);
     const end = Math.min(totalPages - 1, page + delta);
@@ -45,9 +53,8 @@ export default function Pagination({ page, totalPages, updateParam }: Pagination
   const visiblePages = getVisiblePages();
 
   return (
-    <nav aria-label="Pagination" className="flex gap-2 items-center mt-4">
-      {/* PREV */}
-      <button 
+    <nav aria-label="Pagination" className="mt-4 flex items-center gap-2">
+      <button
         type="button"
         onClick={() => changePage(page - 1)}
         disabled={page === 1}
@@ -65,7 +72,7 @@ export default function Pagination({ page, totalPages, updateParam }: Pagination
             key={item}
             onClick={() => changePage(item)}
             aria-current={page === item ? "page" : undefined}
-            aria-label="Next page"
+            aria-label={`Page ${item}`}
             className={page === item ? "font-bold" : "font-normal"}
           >
             {item}
@@ -73,11 +80,11 @@ export default function Pagination({ page, totalPages, updateParam }: Pagination
         )
       )}
 
-      {/* NEXT */}
-      <button 
+      <button
         type="button"
         onClick={() => changePage(page + 1)}
         disabled={page === totalPages}
+        aria-label="Next page"
       >
         Next
       </button>
