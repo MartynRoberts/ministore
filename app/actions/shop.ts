@@ -73,3 +73,7 @@ export async function clearBasket() {
 export async function clearFavourites() {
   return mutate(shop => { shop.favs = []; });
 }
+
+export async function getCurrentSessionId() {
+  return sessionId();
+}
