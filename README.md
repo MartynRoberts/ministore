@@ -42,8 +42,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 `Product` type in `types/index.ts`; `lib/products.ts` validates DummyJSON payloads
 and maps `thumbnail` (or the first gallery image) to `image`.
 
-The feed is https://dummyjson.com/products?limit=0 so local search, category
-filters, basket lookup, and pagination cover the full catalogue. Requests have a
+The feed is https://dummyjson.com/products?limit=0. The server catalogue service
+queries this cached feed for consistent combined filters and facets. Requests have a
 10-second timeout and a one-hour Next.js revalidation interval. HTTP, network,
 JSON, and validation errors use `data/products.json`, a DummyJSON snapshot fetched
 on 2026-09-07. A detail 404 returns null. Images still require network access.
@@ -56,3 +56,34 @@ Prices retain the existing shop display convention; no currency conversion is ap
 
 Run API regression checks with `node --test tests/api.test.cjs` and type checks
 with `npx tsc --noEmit`.
+
+## Server-driven catalogue and search
+
+`lib/catalogue.ts` is the server service used by the products page and HTTP routes.
+`lib/catalogue-query.ts` defines the normalized query/result contract and applies
+search, category, favourites, sorting, and pagination before returning results.
+The browser receives one page (24 products by default, maximum 48).
+
+- `GET /api/products?q=shirt&category=mens-shirts&sort=low-high&page=1&pageSize=24`
+  returns `{ items, total, page, pageSize, totalPages, facets: { categories } }`.
+  Sorts: `relevance`, `low-high`, `high-low`, `a-z`, `z-a`.
+  The existing `search` query parameter is also supported; `q` takes precedence.
+- Category facets contain `{ value, count }`, reflecting search and favourites
+  before category selection. All search terms must match title, description or
+  category; relevance prefers title matches and ties use product ID.
+- `favs=true` uses the current session's favourites. Product API responses are
+  private and not cached by the browser/shared CDN.
+- `GET /api/products/suggestions?q=shirt` returns at most four lightweight
+  suggestions. Queries shorter than two characters return an empty list.
+- The header waits 300 ms after typing, cancels superseded requests, and displays
+  loading, empty and failure states. Enter and the all-results link navigate to
+  the full search page. Escape or leaving the search panel closes suggestions.
+- Product-page navigation uses Next.js server rendering and calls the catalogue
+  service directly, without an internal HTTP round trip. Search, category, sort,
+  favourites and page remain bookmarkable. Controls show pending navigation.
+
+DummyJSON remains the provider, with a cached full catalogue queried on the
+server. This is a demo implementation of the search-service boundary, not a
+production search index. A larger catalogue should replace that implementation
+with indexed queries while preserving the storefront contract. Basket persistence,
+variants and checkout have not changed in this search implementation.

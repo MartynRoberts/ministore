@@ -6,7 +6,7 @@ import { getShopSession } from "@/app/actions/shop";
 import HeaderNav from "./HeaderNav";
 import SiteFooter from "./SiteFooter";
 import HeaderSearch from "./HeaderSearch";
-import { api } from "@/lib/api";
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -19,7 +19,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getShopSession();
-  const products = await api.getProducts();
+
 
   return (
     <html lang="en">
@@ -35,7 +35,7 @@ export default async function RootLayout({
                   MiniStore
                 </Link>
 
-                <HeaderSearch products={products} />
+                <HeaderSearch />
 
                 <HeaderNav />
               </div>
