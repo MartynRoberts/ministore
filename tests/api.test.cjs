@@ -10,7 +10,7 @@ function load(path, imports = {}, fetch) {
   const code = ts.transpileModule(fs.readFileSync(path, 'utf8'), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true },
   }).outputText;
-  vm.runInNewContext(code, { exports, require: (id) => imports[id], fetch, AbortSignal, console: { error() {} } });
+  vm.runInNewContext(code, { exports, require: (id) => imports[id], fetch, AbortSignal, URLSearchParams, console: { error() {} } });
   return exports;
 }
 const adapter = load('lib/products.ts');
@@ -66,4 +66,54 @@ test('network, HTTP, JSON and schema failures use the same-provider snapshot', a
     assert.equal((await client.getProduct(raw.id)).title, raw.title);
     assert.equal(await client.getProduct(999999), null);
   }
+});
+
+
+const catalogue = load('lib/catalogue-query.ts');
+const fixture = [
+  { id: 1, title: 'Blue shirt', description: 'Cotton', price: 30, category: 'shirts', image: 'a' },
+  { id: 2, title: 'Red shirt', description: 'Cotton', price: 20, category: 'shirts', image: 'b' },
+  { id: 3, title: 'Blue shoes', description: 'Leather', price: 20, category: 'shoes', image: 'c' },
+  { id: 4, title: 'Jacket', description: 'Blue cotton', price: 50, category: 'jackets', image: 'd' },
+];
+const query = (params) => catalogue.parseCatalogueQuery(new URLSearchParams(params));
+const ids = (result) => Array.from(result.items, product => product.id);
+test('search and category are combined before pagination, with contextual facets', () => {
+  const result = catalogue.queryCatalogue(fixture, query('q=blue&category=shirts&pageSize=1'));
+  assert.deepEqual(ids(result), [1]);
+  assert.equal(result.total, 1);
+  assert.equal(result.facets.categories.length, 3);
+  assert.equal(result.facets.categories.find(f => f.value === 'shirts').count, 1);
+});
+test('sorting is global and deterministic across pages', () => {
+  const result = catalogue.queryCatalogue(fixture, query('sort=low-high&pageSize=2&page=2'));
+  assert.deepEqual(ids(result), [1, 4]);
+  assert.equal(result.total, 4);
+  assert.equal(result.totalPages, 2);
+  assert.deepEqual(ids(catalogue.queryCatalogue(fixture, query('sort=high-low'))), [4, 1, 2, 3]);
+});
+test('invalid pagination is normalized, large sizes are bounded, and empty pages are safe', () => {
+  const parsed = query('page=1.5&pageSize=999&sort=invalid');
+  assert.equal(parsed.page, 1);
+  assert.equal(parsed.pageSize, 48);
+  assert.equal(parsed.sort, 'relevance');
+  const last = catalogue.queryCatalogue(fixture, query('page=999&pageSize=2'));
+  assert.equal(last.page, 2);
+  assert.deepEqual(ids(last), [3, 4]);
+  const empty = catalogue.queryCatalogue(fixture, query('q=missing&page=10'));
+  assert.equal(empty.page, 1);
+  assert.equal(empty.totalPages, 0);
+  assert.equal(empty.items.length, 0);
+});
+test('favourites constrain totals and facets before pagination', () => {
+  const result = catalogue.queryCatalogue(fixture, query('favs=true'), [2, 3]);
+  assert.deepEqual(ids(result), [2, 3]);
+  assert.equal(result.total, 2);
+  assert.equal(result.facets.categories.length, 2);
+  assert.equal(catalogue.queryCatalogue(fixture, query('favs=true')).total, 0);
+});
+test('search supports existing URLs, multiple terms, and title-first relevance', () => {
+  assert.deepEqual(ids(catalogue.queryCatalogue(fixture, query('search=blue%20cotton'))), [1, 4]);
+  assert.deepEqual(ids(catalogue.queryCatalogue(fixture, query('q=blue'))), [1, 3, 4]);
+  assert.equal(query('q=' + 'a'.repeat(300)).search.length, 200);
 });

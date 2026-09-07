@@ -1,33 +1,24 @@
 "use client";
 
-import type { Product } from "@/types";
+import type { CatalogueResult, CatalogueQuery } from "@/lib/catalogue-query";
 import { useProductFilters } from "@/hooks/useProductFilters";
 import { useShop } from "@/app/ShopProvider";
 import ProductCard from "@/components/ProductCard";
-import CategoryFilter from "@/components/CategoryFilter";
+
 import ProductSortSelect from "@/components/ProductSortSelect";
 import Pagination from "@/components/Pagination";
 
 type Props = {
-  products: Product[];
+  result: CatalogueResult;
+  query: CatalogueQuery;
 };
 
-export default function ProductListClient({ products }: Props) {
+export default function ProductListClient({ result, query }: Props) {
   const { favs, addToBasket, toggleFav } = useShop();
 
-  const {
-    search,
-    category,
-    sort,
-    favsOnly,
-    categories,
-    pagedResults,
-    clampedPage,
-    totalPages,
-    resultsCount,
-    updateParam,
-    clearFilters,
-  } = useProductFilters(products, favs);
+  const { search, category, sort, favsOnly } = query;
+  const { items: pagedResults, page: clampedPage, totalPages, total: resultsCount } = result;
+  const { updateParam, clearFilters, pending } = useProductFilters();
 
   const sortOptions = [
     { id: "relevance", name: "Relevance" },
@@ -39,12 +30,12 @@ export default function ProductListClient({ products }: Props) {
 
   return (
     <div className="mx-auto w-full max-w-[1680px] px-4 my-16">
-      <div className="flex items-center gap-3 mb-3">
-        <CategoryFilter
-          categories={categories}
-          value={category}
-          onChange={(value: string) => updateParam("category", value)}
-        />
+      <fieldset disabled={pending} className="flex flex-wrap items-center gap-3 mb-3">
+        <select aria-label="Category" value={category} onChange={(event) => updateParam("category", event.target.value)} className="p-2">
+          <option value="">All categories</option>
+          {category && !result.facets.categories.some(facet => facet.value === category) && <option value={category}>{category} (0)</option>}
+          {result.facets.categories.map(facet => <option key={facet.value} value={facet.value}>{facet.value.replaceAll("-", " ")} ({facet.count})</option>)}
+        </select>
 
         <p className="m-0 opacity-80">{resultsCount} results</p>
 
@@ -68,7 +59,8 @@ export default function ProductListClient({ products }: Props) {
           value={sort}
           onChange={(value: string) => updateParam("sort", value)}
         />
-      </div>
+      </fieldset>
+      {pending && <p role="status">Updating products…</p>}
 
       {pagedResults.length === 0 &&
         (favsOnly ? (
@@ -81,7 +73,7 @@ export default function ProductListClient({ products }: Props) {
           <>
             <h3>
               No matching products found
-              {search && <span> for "{search}"</span>}
+              {search && <span> for &quot;{search}&quot;</span>}
               {category && <span> in {category} category</span>}
             </h3>
             <p>Try adjusting your search or filters.</p>
@@ -102,7 +94,7 @@ export default function ProductListClient({ products }: Props) {
         </div>
       )}
 
-      <Pagination page={clampedPage} totalPages={totalPages} updateParam={updateParam} />
+      <fieldset disabled={pending}><Pagination page={clampedPage} totalPages={totalPages} updateParam={updateParam} /></fieldset>
     </div>
   );
 }

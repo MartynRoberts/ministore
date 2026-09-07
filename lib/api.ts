@@ -18,7 +18,7 @@ async function request(path: string): Promise<unknown | null> {
 export const api = {
   async getProducts(): Promise<Product[]> {
     try {
-      // Search, filters, and pagination operate on the entire catalogue locally.
+      // The server catalogue service queries this cached provider feed.
       return normalizeProducts(await request("/products?limit=0"));
     } catch (error) {
       console.error("Using the offline product catalogue:", error);
