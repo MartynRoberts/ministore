@@ -16,7 +16,7 @@ export default function ProductActions({
   const isFav = favs.includes(productId);
 
   const isClothing =
-    category === "men's clothing" || category === "women's clothing";
+    ["mens-shirts", "womens-dresses", "tops"].includes(category);
 
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 

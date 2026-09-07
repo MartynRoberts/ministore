@@ -19,8 +19,8 @@ export default async function ProductDetailPage({
   const allProducts = await api.getProducts();
 
   const recommendations = allProducts
-    .filter((p: any) => p.id !== product.id)
-    .sort((a: any, b: any) => {
+    .filter((p) => p.id !== product.id)
+    .sort((a, b) => {
       const aSameCategory = a.category === product.category ? 1 : 0;
       const bSameCategory = b.category === product.category ? 1 : 0;
       return bSameCategory - aSameCategory;

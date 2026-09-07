@@ -2,23 +2,13 @@ import Link from "next/link";
 import { api } from "@/lib/api";
 import ProductScroller from "@/components/ProductScroller";
 
-const categoryImages: Record<string, string> = {
-  electronics:
-    "https://images.unsplash.com/photo-1758186374131-d542d2beae0c?q=80&w=1932&auto=format&fit=crop",
-  jewelery:
-    "https://images.unsplash.com/photo-1722410180644-5955f83ec8b1?q=80&w=1470&auto=format&fit=crop",
-  "men's clothing":
-    "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?q=80&w=1470&auto=format&fit=crop",
-  "women's clothing":
-    "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?q=80&w=1470&auto=format&fit=crop",
-};
 
 export default async function HomePage() {
   const products = await api.getProducts();
 
   const categories = Array.from(
-    new Set(products.map((p: any) => p.category as string))
-  ).sort() as string[];
+    new Set(products.map((p) => p.category))
+  ).sort();
 
   const topSellers = products.slice(0, 6);
 
@@ -63,8 +53,8 @@ export default async function HomePage() {
 
         <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {categories.map((category) => {
-            const title = category.charAt(0).toUpperCase() + category.slice(1);
-            const image = categoryImages[category];
+            const title = category.replaceAll("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+            const image = products.find((product) => product.category === category)!.image;
 
             return (
               <Link
@@ -75,7 +65,7 @@ export default async function HomePage() {
                 <img
                   src={image}
                   alt={title}
-                  className="h-48 w-full object-cover"
+                  className="h-48 w-full object-contain"
                 />
 
                 <div className="p-4">

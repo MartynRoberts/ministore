@@ -17,7 +17,7 @@ export default function ProductDetailView({
   loading = false,
 }: Props) {
   const categoryTitle =
-    product?.category.charAt(0).toUpperCase() + product?.category.slice(1);
+    product?.category.replaceAll("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()) ?? "";
 
   return (
     <div className="mx-auto my-16 w-full max-w-[1680px] px-4">

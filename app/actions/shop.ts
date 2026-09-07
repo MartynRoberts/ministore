@@ -7,7 +7,8 @@ type ShopSession = {
   favs: number[];
 };
 
-const COOKIE_NAME = "shop_session";
+// Product IDs are provider-specific; do not reuse Fake Store baskets.
+const COOKIE_NAME = "shop_session_dummyjson_v1";
 
 async function readSession(): Promise<ShopSession> {
   const cookieStore = await cookies();
