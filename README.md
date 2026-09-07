@@ -112,7 +112,38 @@ or is free at £100; premium costs £4.50 and next-day £5.00. The server recalc
 these amounts when quantities or delivery change. A catalogue outage can still
 use the demo fallback; these are browsing estimates, not payment authorisation.
 
-Checkout now displays a server-rendered basket review. Payment, order placement,
-live stock reservations and final checkout validation remain future work.
+Checkout supports simulated payment and persisted demo orders, as described below. Live stock reservations remain future work.
 
 Run all regression tests with `node --test tests/api.test.cjs tests/basket.test.cjs`.
+
+## Demo checkout and orders
+
+Checkout collects UK delivery details and offers simulated payment approval or
+decline. It never collects card details, charges money, sends email or ships items.
+The initial review and final submission both fetch uncached DummyJSON prices and
+stock. Checkout stops on provider failure; the offline browsing catalogue cannot
+approve an order. Stock checks aggregate quantities across the demo size variants.
+
+Each review creates a session-bound checkout token valid for 30 minutes and a
+fingerprint of the reviewed lines, prices and delivery. Submission validates the
+customer details, current basket and live quote. Changes require a new review.
+A decline leaves the basket intact and permits retrying the same checkout.
+
+Approved demo payment stores an immutable order snapshot and clears the basket
+in one SQLite transaction. The unique checkout token prevents duplicate orders:
+retries return the existing order, including after a lost response. A second
+checkout tab cannot repurchase an emptied basket. Confirmation at `/orders/[id]`
+is restricted to the session that placed the order.
+
+This simulator checks supplier stock but does not reserve or decrement it.
+Production payments require a payment provider, verified webhooks, payment-attempt
+persistence/reconciliation, inventory reservations and fulfilment integration.
+Draft/order data is stored in the same private SQLite file; retention cleanup and
+an account-based order history remain future work.
+
+Run all checks with:
+
+```bash
+node --test tests/api.test.cjs tests/basket.test.cjs tests/checkout.test.cjs
+npm run build
+```
