@@ -50,9 +50,7 @@ on 2026-09-07. A detail 404 returns null. Images still require network access.
 Refresh the snapshot from the same endpoint, optionally selecting
 `id,title,description,price,category,thumbnail,images`; retain its products envelope.
 
-The session cookie is now `shop_session_dummyjson_v1`. Existing Fake Store baskets
-and favourites start empty because the two providers reuse IDs for different products.
-Prices retain the existing shop display convention; no currency conversion is applied.
+See the persistent-basket section below for current session storage. Prices retain the existing shop display convention; no currency conversion is applied.
 
 Run API regression checks with `node --test tests/api.test.cjs` and type checks
 with `npx tsc --noEmit`.
@@ -85,5 +83,36 @@ The browser receives one page (24 products by default, maximum 48).
 DummyJSON remains the provider, with a cached full catalogue queried on the
 server. This is a demo implementation of the search-service boundary, not a
 production search index. A larger catalogue should replace that implementation
-with indexed queries while preserving the storefront contract. Basket persistence,
-variants and checkout have not changed in this search implementation.
+with indexed queries while preserving the storefront contract. Basket persistence and variants are described below.
+
+## Persistent basket and variants
+
+Requires Node.js 24+. Basket lines, favourites and the delivery choice are stored
+in SQLite at `.data/ministore.sqlite` (ignored by Git). Override the runtime path
+with `MINISTORE_DB_PATH`. Use a persistent disk for this single-host demo; a
+multi-instance/serverless deployment needs a shared database implementation.
+The database is created lazily on the first session mutation.
+
+Only a random session ID is stored in the `ministore_session_v2` cookie. It is
+HttpOnly, SameSite=Lax, Secure in production, and expires after 30 days. Old
+cookie-based baskets and favourites start empty; their untrusted contents are
+not imported into the database. The database file must be preserved across
+restarts to preserve sessions. Expired-session database cleanup is not yet scheduled.
+
+`lib/basket.ts` defines the variant and basket contracts. Clothing products use
+MiniStore demo variants S/M/L/XL; other products have one Standard variant.
+These are not supplier inventory records. Basket mutations validate the product,
+variant and whole-number quantity (0 removes a line; maximum 99). Each size has
+its own basket line. SQLite transactions prevent lost updates within a session.
+
+The server returns a fresh basket quote after each mutation. Monetary amounts
+in that quote are integer pence with currency GBP, retaining the existing demo
+price convention without currency conversion. Standard delivery costs £3.50,
+or is free at £100; premium costs £4.50 and next-day £5.00. The server recalculates
+these amounts when quantities or delivery change. A catalogue outage can still
+use the demo fallback; these are browsing estimates, not payment authorisation.
+
+Checkout now displays a server-rendered basket review. Payment, order placement,
+live stock reservations and final checkout validation remain future work.
+
+Run all regression tests with `node --test tests/api.test.cjs tests/basket.test.cjs`.

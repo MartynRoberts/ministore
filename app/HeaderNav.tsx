@@ -4,10 +4,10 @@ import Link from "next/link";
 import { useShop } from "./ShopProvider";
 
 export default function HeaderNav() {
-  const { basket, favs } = useShop();
+  const { basket } = useShop();
 
-  const favouritesCount = favs.length;
-  const basketCount = Object.values(basket).reduce((sum, qty) => sum + qty, 0);
+
+  const basketCount = basket.count;
 
   return (
     <div className="ml-auto flex items-center gap-8">

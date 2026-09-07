@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useShop } from "@/app/ShopProvider";
 
-const sizes = ["S", "M", "L", "XL"];
+import { getVariants } from "@/lib/basket";
 
 export default function ProductActions({
   productId,
@@ -12,11 +12,11 @@ export default function ProductActions({
   productId: number;
   category: string;
 }) {
-  const { addToBasket, toggleFav, favs } = useShop();
+  const { addToBasket, toggleFav, favs, pending } = useShop();
   const isFav = favs.includes(productId);
 
-  const isClothing =
-    ["mens-shirts", "womens-dresses", "tops"].includes(category);
+  const variants = getVariants({ id: productId, category });
+  const isClothing = variants.length > 1;
 
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
@@ -28,13 +28,13 @@ export default function ProductActions({
           <p className="mb-2 font-medium">Size</p>
 
           <div className="flex justify-start gap-2">
-            {sizes.map((size) => {
-              const selected = selectedSize === size;
+            {variants.map(({ id: variantId, label: size }) => {
+              const selected = selectedSize === variantId;
 
               return (
                 <button
                   key={size}
-                  onClick={() => setSelectedSize(size)}
+                  onClick={() => setSelectedSize(variantId)}
                   className={`h-10 w-12 mb-8 cursor-pointer rounded border text-sm font-medium transition
                     ${
                       selected
@@ -53,8 +53,8 @@ export default function ProductActions({
       {/* Action buttons */}
       <div className="flex items-center gap-3">
         <button
-          onClick={() => addToBasket(productId)}
-          disabled={isClothing && !selectedSize}
+          onClick={() => addToBasket(productId, selectedSize ?? variants[0].id)}
+          disabled={pending || (isClothing && !selectedSize)}
           className={`h-14 mb-8 flex-1 rounded-md px-6 text-lg font-semibold transition
             ${
               isClothing && !selectedSize
@@ -66,6 +66,7 @@ export default function ProductActions({
         </button>
 
         <button
+          disabled={pending}
           onClick={() => toggleFav(productId)}
           aria-label={isFav ? "Remove from favourites" : "Add to favourites"}
           className="flex h-14 w-14 mb-8 cursor-pointer items-center justify-center rounded-md border border-gray-300 transition hover:bg-gray-100"
