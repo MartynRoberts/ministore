@@ -64,7 +64,7 @@ export default function ProductDetailView({
                 {formatGBP(product!.price)}
               </p>
 
-              <ProductActions
+              <ProductActions key={product!.id}
                 productId={product!.id}
                 category={product!.category}
               />

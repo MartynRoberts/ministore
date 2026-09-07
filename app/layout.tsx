@@ -27,7 +27,7 @@ export default async function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body className="bg-white">
-        <ShopProvider initialBasket={session.basket} initialFavs={session.favs}>
+        <ShopProvider initialSession={session}>
           <div className="flex min-h-screen w-full flex-col">
             <header className="w-full">
               <div className="mx-auto flex w-full max-w-[1680px] items-center gap-6 px-4 py-8">
