@@ -3,6 +3,7 @@ import { api } from "@/lib/api";
 import ProductScroller from "@/components/ProductScroller";
 import { buttonStyles } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Layout";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 
 
 export default async function HomePage() {
@@ -18,17 +19,20 @@ export default async function HomePage() {
     <div className="pb-16">
       <div className="relative mb-8">
         <img
-          src="https://images.unsplash.com/photo-1664455340023-214c33a9d0bd?q=80&w=1032&auto=format&fit=crop"
-          alt="Shopping image"
+          src="/home-hero.jpg"
+          alt="Mini Store"
           className="block w-full"
         />
 
         <div className="absolute inset-0 bg-overlay" />
 
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-on-primary">
-          <h2 className="text-3xl font-bold">Spring Deals</h2>
+          <h1>
+            <span className="sr-only">Mini Store</span>
+            <BrandLogo size="hero" />
+          </h1>
           <p className="mt-2 text-lg">
-            Discover new arrivals and trending products.
+            &quot;Like a real store, but not!&quot;
           </p>
           <Link href="/products" className={buttonStyles({ size: "lg", className: "mt-4" })}>
             Shop now

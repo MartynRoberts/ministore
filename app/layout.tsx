@@ -6,6 +6,7 @@ import { getShopSession } from "@/app/actions/shop";
 import HeaderNav from "./HeaderNav";
 import SiteFooter from "./SiteFooter";
 import HeaderSearch from "./HeaderSearch";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 
 
 export const metadata: Metadata = {
@@ -37,20 +38,9 @@ export default async function RootLayout({
                 <Link
                   href="/"
                   aria-label="MiniStore home"
-                  className="inline-flex shrink-0 -translate-y-[3px] flex-col self-center text-text no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus"
+                  className="inline-flex shrink-0 -translate-y-[3px] self-center text-text no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus"
                 >
-                  <span
-                    aria-hidden="true"
-                    className="pl-[0.12em] text-[0.72rem] font-black leading-none tracking-[0.32em]"
-                  >
-                    MINI
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className="-mt-[0.05em] text-[2.35rem] font-light leading-[0.82] tracking-[0.01em]"
-                  >
-                    STORE
-                  </span>
+                  <BrandLogo />
                 </Link>
 
                 <HeaderSearch />
