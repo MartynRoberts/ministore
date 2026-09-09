@@ -7,13 +7,14 @@ import { formatMoney } from "@/lib/money";
 import { Button, buttonStyles } from "@/components/ui/Button";
 import { Select } from "@/components/ui/FormControls";
 import { Card, PageContainer, StatusMessage } from "@/components/ui/Layout";
+import { ChevronIcon } from "@/components/ui/ChevronIcon";
 
 export default function BasketClient() {
   const { basket, setQty, setDelivery, pending } = useShop();
   const money = (value: number) => formatMoney(value, basket.currency);
   return <PageContainer>
     <h1 className="mb-8 text-xl font-bold">Basket</h1>
-    <Link href="/products">← Continue shopping</Link>
+    <Link href="/products" className="inline-flex items-center gap-2"><ChevronIcon className="h-4 w-4" />Continue shopping</Link>
     {pending && <p role="status">Updating basket…</p>}
     {!basket.lines.length ? <p>Your basket is empty.</p> : <div className="mt-6 grid gap-8 lg:grid-cols-[1.5fr_420px]">
       <fieldset disabled={pending} className="grid gap-3">

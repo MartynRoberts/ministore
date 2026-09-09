@@ -7,7 +7,7 @@ import HeaderNav from "./HeaderNav";
 import SiteFooter from "./SiteFooter";
 import HeaderSearch from "./HeaderSearch";
 import { BrandLogo } from "@/components/ui/BrandLogo";
-
+import ProductNav from "./ProductNav";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,7 +24,6 @@ export default async function RootLayout({
 }) {
   const session = await getShopSession();
 
-
   return (
     <html lang="en">
       <head>
@@ -34,14 +33,16 @@ export default async function RootLayout({
         <ShopProvider initialSession={session}>
           <div className="flex min-h-screen w-full flex-col">
             <header className="sticky top-0 z-50 w-full border-b border-border bg-surface">
-              <div className="mx-auto grid w-full max-w-content grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-4 px-4 py-5 sm:gap-x-8 xl:grid-cols-[auto_minmax(16rem,48rem)_minmax(0,1fr)] xl:py-6">
+              <div className="mx-auto grid w-full max-w-content grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-4 px-4 py-5 sm:gap-x-8 xl:grid-cols-[auto_auto_minmax(16rem,36rem)_minmax(0,1fr)] xl:gap-x-16 xl:py-6">
                 <Link
                   href="/"
                   aria-label="MiniStore home"
-                  className="inline-flex shrink-0 -translate-y-[3px] self-center text-text no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus"
+                  className="col-start-2 row-start-1 inline-flex shrink-0 -translate-y-[3px] justify-self-center self-center text-text no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus xl:col-start-1 xl:mr-4 xl:justify-self-start"
                 >
                   <BrandLogo />
                 </Link>
+
+                <ProductNav />
 
                 <HeaderSearch />
 

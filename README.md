@@ -220,11 +220,11 @@ MiniStore has two complementary test layers:
 - **36 Node tests** cover API normalization and failure handling, catalogue
   queries, server actions, basket rules, SQLite persistence, checkout security,
   competing stock reservations, order transitions, and admin authorization.
-- **13 Jest and React Testing Library tests** cover shared UI primitives,
+- **19 Jest and React Testing Library tests** cover shared UI primitives,
   accessible form behaviour, pagination, product-card interactions, and the
   admin password experience.
 
-Run the complete 49-test suite and generate frontend coverage:
+Run the complete 55-test suite and generate frontend coverage:
 
 ```bash
 npm run test:ci
