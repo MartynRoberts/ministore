@@ -18,6 +18,66 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## Testing
+
+MiniStore has two complementary automated test layers:
+
+- **Server and domain tests** use Node's built-in test runner. The 36 tests in
+  `tests/*.test.cjs` cover product normalization and fallback behaviour,
+  catalogue search and pagination, basket pricing and persistence, checkout and
+  inventory transactions, order lifecycles, session isolation, and admin
+  authentication.
+- **Component tests** use Jest, JSDOM, React Testing Library, jest-dom, and
+  `user-event`. The tests in `__tests__/components` cover the shared design
+  system, native form behaviour, pagination, product-card actions, and admin
+  password validation and visibility controls.
+
+Run the complete suite before merging a change:
+
+```bash
+npm run test:ci
+```
+
+This runs all server tests followed by the Jest component tests in CI mode and
+generates a coverage report in `coverage/`. The Jest report measures the
+browser-facing TypeScript and React files configured in `jest.config.cjs`; the
+Node server tests are validated separately and are not included in those Jest
+coverage percentages.
+
+Other useful commands:
+
+| Command | Purpose |
+| --- | --- |
+| `npm test` | Run the Jest and React Testing Library component suite once. |
+| `npm run test:watch` | Re-run relevant Jest tests while files change. |
+| `npm run test:coverage` | Run Jest and write HTML and terminal coverage reports. |
+| `npm run test:server` | Run the Node server and domain regression suite. |
+| `npm run test:ci` | Run both suites and collect Jest coverage. |
+| `npx tsc --noEmit` | Type-check application and test TypeScript. |
+| `npm run lint` | Lint application and test sources. |
+| `npm run build` | Verify the production Next.js build. |
+
+Jest is configured through `jest.config.cjs`, with global DOM matchers loaded by
+`jest.setup.cjs`. `next/jest` handles the Next.js transforms, CSS and image
+imports, environment loading, and the `@/` path alias. Component tests run in
+`jest-environment-jsdom`; the existing `.cjs` server tests remain assigned to
+Node's test runner through an explicit Jest `testMatch`.
+
+Write component tests from the user's perspective. Query elements by accessible
+role, label, or visible text; use `userEvent.setup()` for interactions; and test
+observable outcomes rather than component state or implementation details. Mock
+only external boundaries such as server actions or navigation. Add server tests
+for pricing, persistence, authorization, concurrency, and lifecycle rules. Avoid
+snapshot-only tests for interactive behaviour.
+
+For a pull request, the expected local validation is:
+
+```bash
+npm run test:ci
+npm run lint
+npm run build
+```
+
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
@@ -52,8 +112,8 @@ Refresh the snapshot from the same endpoint, optionally selecting
 
 See the persistent-basket section below for current session storage. Prices retain the existing shop display convention; no currency conversion is applied.
 
-Run API regression checks with `node --test tests/api.test.cjs` and type checks
-with `npx tsc --noEmit`.
+Run the focused API regression file with `node --test tests/api.test.cjs`, or see
+[Testing](#testing) for the complete validation workflow.
 
 ## Server-driven catalogue and search
 
@@ -114,7 +174,7 @@ use the demo fallback; these are browsing estimates, not payment authorisation.
 
 Checkout supports simulated payment and persisted demo orders, as described below. Live stock reservations remain future work.
 
-Run all regression tests with `node --test tests/api.test.cjs tests/basket.test.cjs`.
+See [Testing](#testing) for the complete server and component test commands.
 
 ## Demo checkout and orders
 
@@ -144,6 +204,7 @@ an account-based order history remain future work.
 Run all checks with:
 
 ```bash
-node --test tests/api.test.cjs tests/basket.test.cjs tests/checkout.test.cjs
+npm run test:ci
+npm run lint
 npm run build
 ```

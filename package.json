@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:server": "node --test tests/api.test.cjs tests/basket.test.cjs tests/checkout.test.cjs",
+    "test:ci": "npm run test:server && jest --ci --coverage --runInBand"
   },
   "dependencies": {
     "next": "^16.3.4",
@@ -16,11 +21,17 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.1",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.13.3",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "jest": "^30.5.1",
+    "jest-environment-jsdom": "^30.5.1",
     "tailwindcss": "^4.2.1",
     "typescript": "^5"
   },
