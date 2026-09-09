@@ -57,11 +57,11 @@ export default async function HomePage() {
             const image = products.find((product) => product.category === category)!.image;
 
             return (
-              <Card key={category} className="overflow-hidden transition hover:-translate-y-1 hover:shadow-card">
+              <Card key={category} className="overflow-hidden transition hover:border-focus hover:shadow-card focus-within:border-focus focus-within:shadow-card">
               <Link
                 key={category}
                 href={`/products?category=${encodeURIComponent(category)}`}
-                className="block text-inherit no-underline"
+                className="block text-inherit no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
               >
                 <img
                   src={image}
