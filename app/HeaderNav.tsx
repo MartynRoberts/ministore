@@ -14,7 +14,7 @@ export default function HeaderNav() {
       <Link href="/orders" className="inline-flex min-h-11 items-center px-1 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2">Orders</Link>
       <Link href="/favourites" className="inline-flex min-h-11 items-center px-1 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2">Favourites</Link>
 
-      <Link href="/basket" className="relative inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-sm hover:bg-neutral-100 focus-visible:outline-2 focus-visible:outline-offset-2">
+      <Link href="/basket" className="relative inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-sm hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -28,7 +28,7 @@ export default function HeaderNav() {
         </svg>
 
         {basketCount > 0 && (
-          <span className="absolute -right-2 -top-2 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-black px-1 text-xs font-semibold text-white">
+          <span className="absolute -right-2 -top-2 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1 text-xs font-semibold text-on-primary">
             {basketCount}
           </span>
         )}

@@ -1,4 +1,4 @@
-import { formatGBP } from "../utils/money";
+import { Select } from "@/components/ui/FormControls";
 
 type DeliveryOption = {
   id: string;
@@ -23,11 +23,11 @@ export default function DeliverySelect({
 
   return (
     <div className="relative">
-      <select
+      <Select
         id="delivery"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-12 w-full cursor-pointer rounded-md border border-gray-300 bg-white px-3 pr-10 text-base outline-none transition focus:border-black appearance-none"
+        className="h-12 w-full appearance-none"
       >
         <option value="">Select delivery option</option>
         {visibleOptions.map((option) => (
@@ -35,10 +35,10 @@ export default function DeliverySelect({
             {option.name}
           </option>
         ))}
-      </select>
+      </Select>
 
       <svg
-        className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-600"
+        className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"
         fill="currentColor"

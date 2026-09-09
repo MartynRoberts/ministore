@@ -7,6 +7,9 @@ import ProductCard from "@/components/ProductCard";
 
 import ProductSortSelect from "@/components/ProductSortSelect";
 import Pagination from "@/components/Pagination";
+import { Button } from "@/components/ui/Button";
+import { Select } from "@/components/ui/FormControls";
+import { PageContainer } from "@/components/ui/Layout";
 
 type Props = {
   result: CatalogueResult;
@@ -29,13 +32,13 @@ export default function ProductListClient({ result, query }: Props) {
   ];
 
   return (
-    <div className="mx-auto w-full max-w-[1680px] px-4 my-16">
+    <PageContainer>
       <fieldset disabled={pending} className="flex flex-wrap items-center gap-3 mb-3">
-        <select aria-label="Category" value={category} onChange={(event) => updateParam("category", event.target.value)} className="p-2">
+        <Select aria-label="Category" value={category} onChange={(event) => updateParam("category", event.target.value)} className="w-auto">
           <option value="">All categories</option>
           {category && !result.facets.categories.some(facet => facet.value === category) && <option value={category}>{category} (0)</option>}
           {result.facets.categories.map(facet => <option key={facet.value} value={facet.value}>{facet.value.replaceAll("-", " ")} ({facet.count})</option>)}
-        </select>
+        </Select>
 
         <p className="m-0 opacity-80">{resultsCount} results</p>
 
@@ -49,9 +52,9 @@ export default function ProductListClient({ result, query }: Props) {
         </label>
 
         {(category || search || favsOnly) && (
-          <button id="clear" onClick={clearFilters}>
+          <Button id="clear" variant="ghost" size="sm" onClick={clearFilters}>
             Clear
-          </button>
+          </Button>
         )}
 
         <ProductSortSelect
@@ -95,6 +98,6 @@ export default function ProductListClient({ result, query }: Props) {
       )}
 
       <fieldset disabled={pending}><Pagination page={clampedPage} totalPages={totalPages} updateParam={updateParam} /></fieldset>
-    </div>
+    </PageContainer>
   );
 }

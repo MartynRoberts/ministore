@@ -63,30 +63,30 @@ export default function HeaderSearch() {
           onFocus={() => setIsOpen(true)}
           onChange={(event) => { setQuery(event.target.value); setIsOpen(true); }}
           onKeyDown={(event) => { if (event.key === "Escape") setIsOpen(false); }}
-          className="h-11 w-full rounded-sm border border-neutral-400 bg-white px-4 text-base outline-none transition placeholder:text-neutral-500 focus:border-black focus:ring-1 focus:ring-black"
+          className="h-11 w-full rounded-sm border border-border bg-surface px-4 text-base text-text outline-none transition placeholder:text-text-muted focus:border-focus focus:ring-1 focus:ring-focus"
         />
       </form>
       {isOpen && eligible && (
-        <div id="product-suggestions" className="absolute left-0 right-0 top-full z-50 mt-2 rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
-          <p role="status" className="text-sm text-gray-500">
+        <div id="product-suggestions" className="absolute left-0 right-0 top-full z-50 mt-2 rounded-lg border border-border bg-surface p-3 shadow-card">
+          <p role="status" className="text-sm text-text-muted">
             {loading ? "Searching…" : current?.error ?? (current?.items.length ? "Suggested products" : `No suggestions for “${trimmed}”`)}
           </p>
           {!loading && current && !current.error && (
             <ul className="grid gap-2">
               {current.items.map(product => (
                 <li key={product.id}>
-                  <Link href={`/products/${product.id}`} onClick={() => setIsOpen(false)} className="flex items-center gap-3 rounded-md p-2 hover:bg-gray-50">
+                  <Link href={`/products/${product.id}`} onClick={() => setIsOpen(false)} className="flex items-center gap-3 rounded-md p-2 hover:bg-surface-muted">
                     <img src={product.image} alt="" className="h-12 w-12 object-contain" />
                     <div className="min-w-0">
                       <p className="truncate font-medium">{product.title}</p>
-                      <p className="text-sm text-gray-500">{product.category.replaceAll("-", " ")}</p>
+                      <p className="text-sm text-text-muted">{product.category.replaceAll("-", " ")}</p>
                     </div>
                   </Link>
                 </li>
               ))}
             </ul>
           )}
-          <Link href={resultsHref} onClick={() => setIsOpen(false)} className="mt-3 block border-t border-gray-100 pt-3 text-sm font-medium text-blue-600 hover:underline">
+          <Link href={resultsHref} onClick={() => setIsOpen(false)} className="mt-3 block border-t border-border pt-3 text-sm font-medium text-accent hover:underline">
             See all results for “{trimmed}”
           </Link>
         </div>

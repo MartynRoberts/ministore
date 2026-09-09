@@ -1,8 +1,9 @@
 import Link from "next/link";
+import { PageContainer } from "@/components/ui/Layout";
 
 export default function NotFound() {
   return (
-    <div className="mx-auto w-full max-w-[1680px] px-4 my-16">
+    <PageContainer>
       <h2>Product not found</h2>
       <Link className="mt-3 inline-flex items-center gap-2" href="/products">
         <svg
@@ -17,6 +18,6 @@ export default function NotFound() {
         </svg>
         Back to products
       </Link>
-    </div>
+    </PageContainer>
   );
 }

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { api } from "@/lib/api";
 import ProductScroller from "@/components/ProductScroller";
+import { buttonStyles } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Layout";
 
 
 export default async function HomePage() {
@@ -21,30 +23,24 @@ export default async function HomePage() {
           className="block w-full"
         />
 
-        <div className="absolute inset-0 bg-black/35" />
+        <div className="absolute inset-0 bg-overlay" />
 
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white">
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-on-primary">
           <h2 className="text-3xl font-bold">Spring Deals</h2>
           <p className="mt-2 text-lg">
             Discover new arrivals and trending products.
           </p>
-          <Link
-            href="/products"
-            className="mt-4 inline-flex items-center rounded-md bg-black px-5 py-3 font-semibold text-white transition hover:bg-gray-800"
-          >
+          <Link href="/products" className={buttonStyles({ size: "lg", className: "mt-4" })}>
             Shop now
           </Link>
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-[1680px] px-4">
+      <div className="mx-auto w-full max-w-content px-4">
         <p className="mb-6">Discover great products across our categories.</p>
 
         <div className="mb-10">
-          <Link
-            href="/products"
-            className="inline-flex items-center rounded-md bg-black px-5 py-3 font-semibold text-white transition hover:bg-gray-800"
-          >
+          <Link href="/products" className={buttonStyles()}>
             Browse all products
           </Link>
         </div>
@@ -57,10 +53,11 @@ export default async function HomePage() {
             const image = products.find((product) => product.category === category)!.image;
 
             return (
+              <Card key={category} className="overflow-hidden transition hover:-translate-y-1 hover:shadow-card">
               <Link
                 key={category}
                 href={`/products?category=${encodeURIComponent(category)}`}
-                className="block overflow-hidden rounded-lg border border-gray-300 text-inherit no-underline transition hover:-translate-y-1 hover:shadow-md"
+                className="block text-inherit no-underline"
               >
                 <img
                   src={image}
@@ -73,6 +70,7 @@ export default async function HomePage() {
                   <p className="opacity-80">View products</p>
                 </div>
               </Link>
+              </Card>
             );
           })}
         </div>

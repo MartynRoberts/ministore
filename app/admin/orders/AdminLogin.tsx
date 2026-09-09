@@ -1,6 +1,9 @@
 "use client";
 import { useActionState, useState } from "react";
 import { loginAdmin } from "@/app/actions/orders";
+import { Button } from "@/components/ui/Button";
+import { TextInput } from "@/components/ui/FormControls";
+import { StatusMessage } from "@/components/ui/Layout";
 export default function AdminLogin() {
   const [state, action, pending] = useActionState(loginAdmin, {});
   const [showPassword, setShowPassword] = useState(false);
@@ -11,7 +14,7 @@ export default function AdminLogin() {
         Admin password
         </label>
         <div className="mt-2 flex">
-        <input
+        <TextInput
           id="admin-password"
           type={showPassword ? "text" : "password"}
           name="password"
@@ -23,26 +26,27 @@ export default function AdminLogin() {
           minLength={8}
           maxLength={128}
           autoFocus
-          className="block min-w-0 flex-1 rounded-l border border-r-0 p-3 focus:z-10 focus:outline-2 focus:outline-black"
+          className="min-w-0 flex-1 rounded-r-none border-r-0 focus:z-10"
         />
-        <button
+        <Button
           type="button"
           aria-controls="admin-password"
           aria-pressed={showPassword}
           onClick={() => setShowPassword((visible) => !visible)}
-          className="rounded-r border px-4 hover:bg-gray-50 focus:outline-2 focus:outline-black"
+          variant="secondary"
+          className="rounded-l-none"
         >
           {showPassword ? "Hide" : "Show"}
-        </button>
+        </Button>
         </div>
-        <p id="admin-password-help" className="mt-2 text-sm text-gray-600">
+        <p id="admin-password-help" className="mt-2 text-sm text-text-muted">
           Enter 8–128 characters. For this demo, use <strong>password</strong>.
         </p>
       </div>
-      <button disabled={pending} className="rounded bg-black p-3 text-white disabled:cursor-wait disabled:opacity-60">
+      <Button type="submit" disabled={pending}>
         {pending ? "Signing in…" : "Sign in"}
-      </button>
-      {state.error && <p role="alert" className="text-red-700">{state.error}</p>}
+      </Button>
+      {state.error && <StatusMessage role="alert">{state.error}</StatusMessage>}
     </form>
   );
 }

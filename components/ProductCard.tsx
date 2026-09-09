@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Product } from "@/types";
 import { formatGBP } from "../utils/money";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Layout";
 
 type Props = {
   product: Product;
@@ -16,7 +18,7 @@ export default function ProductCard({
   onAddToBasket,
 }: Props) {
   return (
-    <div className="border border-gray-300 rounded-lg p-3">
+    <Card className="flex h-full flex-col p-3 transition hover:-translate-y-1 hover:shadow-card">
       <Link
         href={`/products/${product.id}`}
         className="block text-inherit no-underline"
@@ -24,13 +26,19 @@ export default function ProductCard({
         <img
           src={product.image}
           alt={product.title}
-          className="w-[380px] h-[380px] object-contain"
+          className="aspect-square w-full object-contain"
         />
 
         <h3 className="my-2 min-h-[48px]">{product.title}</h3>
 
-        <p>{formatGBP(product.price)}</p>
+        <p className="font-bold">{formatGBP(product.price)}</p>
       </Link>
-    </div>
+      <div className="mt-4 flex gap-2">
+        <Button className="flex-1" onClick={() => onAddToBasket(product.id)}>Add to basket</Button>
+        <Button variant="secondary" size="icon" onClick={() => onToggleFav(product.id)} aria-label={isFav ? "Remove from favourites" : "Add to favourites"}>
+          <span aria-hidden="true" className={isFav ? "text-danger" : "text-text-muted"}>{isFav ? "♥" : "♡"}</span>
+        </Button>
+      </div>
+    </Card>
   );
 }
