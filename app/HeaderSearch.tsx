@@ -44,7 +44,7 @@ export default function HeaderSearch() {
 
   const resultsHref = trimmed ? `/products?search=${encodeURIComponent(trimmed)}` : "/products";
   return (
-    <div ref={containerRef} className="relative col-span-2 row-start-2 w-full xl:col-span-1 xl:col-start-2 xl:row-start-1 xl:max-w-3xl" onBlur={(event) => {
+    <div ref={containerRef} className="relative col-span-3 row-start-2 w-full xl:col-span-1 xl:col-start-3 xl:row-start-1 xl:max-w-3xl" onBlur={(event) => {
       if (!event.currentTarget.contains(event.relatedTarget)) setIsOpen(false);
     }}>
       <form role="search" onSubmit={(event) => {

@@ -7,6 +7,7 @@ import ProductCard from "@/components/ProductCard";
 import { useShop } from "@/app/ShopProvider";
 import { Button } from "@/components/ui/Button";
 import { PageContainer } from "@/components/ui/Layout";
+import { ChevronIcon } from "@/components/ui/ChevronIcon";
 
 type Props = {
   products: Product[];
@@ -35,7 +36,7 @@ export default function FavouritesClient({ products }: Props) {
       <PageContainer>
         <h4>Your favourites could not be found.</h4>
         <Button variant="secondary" onClick={clearFavourites}>Clear favourites</Button>
-        <Link href="/products">← Browse products</Link>
+        <Link href="/products" className="inline-flex items-center gap-2"><ChevronIcon className="h-4 w-4" />Browse products</Link>
       </PageContainer>
     );
   }
@@ -55,7 +56,7 @@ export default function FavouritesClient({ products }: Props) {
           <>
             <h4>You have not set any products as favourites yet.</h4>
             <p>Tap the heart on a product to add it to favourites.</p>
-            <Link href="/products">← Browse products</Link>
+            <Link href="/products" className="inline-flex items-center gap-2"><ChevronIcon className="h-4 w-4" />Browse products</Link>
           </>
         ) : (
           <h4>No favourites match &quot;{search.trim()}&quot;.</h4>

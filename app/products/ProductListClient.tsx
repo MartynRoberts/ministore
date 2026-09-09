@@ -25,10 +25,10 @@ export default function ProductListClient({ result, query }: Props) {
 
   const sortOptions = [
     { id: "relevance", name: "Relevance" },
-    { id: "low-high", name: "Low → High" },
-    { id: "high-low", name: "High → Low" },
-    { id: "a-z", name: "A → Z" },
-    { id: "z-a", name: "Z → A" },
+    { id: "low-high", name: "Price: low to high" },
+    { id: "high-low", name: "Price: high to low" },
+    { id: "a-z", name: "Name: A to Z" },
+    { id: "z-a", name: "Name: Z to A" },
   ];
 
   return (
