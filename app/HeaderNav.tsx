@@ -11,6 +11,7 @@ export default function HeaderNav() {
 
   return (
     <div className="ml-auto flex items-center gap-8">
+      <Link href="/orders" className="hover:underline">Orders</Link>
       <Link href="/favourites" className="hover:underline">Favourites</Link>
 
       <Link href="/basket" className="relative inline-flex items-center justify-center">
