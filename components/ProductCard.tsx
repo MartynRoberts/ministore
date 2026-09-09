@@ -18,10 +18,10 @@ export default function ProductCard({
   onAddToBasket,
 }: Props) {
   return (
-    <Card className="flex h-full flex-col p-3 transition hover:-translate-y-1 hover:shadow-card">
+    <Card className="flex h-full flex-col p-3 transition hover:border-focus hover:shadow-card focus-within:border-focus focus-within:shadow-card">
       <Link
         href={`/products/${product.id}`}
-        className="block text-inherit no-underline"
+        className="block text-inherit no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
       >
         <img
           src={product.image}

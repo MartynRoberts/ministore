@@ -79,7 +79,7 @@ export default function ProductScroller({
           <Link
             key={product.id}
             href={`/products/${product.id}`}
-            className="block min-w-[220px] max-w-[220px] shrink-0 overflow-hidden rounded-lg border border-border bg-surface text-inherit no-underline transition hover:-translate-y-1 hover:shadow-card"
+            className="block min-w-[220px] max-w-[220px] shrink-0 overflow-hidden rounded-lg border border-border bg-surface text-inherit no-underline transition hover:border-focus hover:shadow-card focus-visible:border-focus focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
             draggable={false}
           >
             <div className="aspect-square bg-surface-muted p-4">
