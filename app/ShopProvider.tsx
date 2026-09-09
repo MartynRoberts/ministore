@@ -45,7 +45,7 @@ export function ShopProvider({ initialSession, children }: { initialSession: Sho
     clearFavourites: () => run(actions.clearFavourites),
   };
   return <ShopContext.Provider value={value}>
-    {error && <p role="alert" className="bg-red-50 p-3 text-red-800">{error}</p>}
+    {error && <p role="alert" className="bg-danger-surface p-3 text-danger">{error}</p>}
     {children}
   </ShopContext.Provider>;
 }

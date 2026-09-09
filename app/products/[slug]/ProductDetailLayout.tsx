@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { PageContainer } from "@/components/ui/Layout";
 
 type Props = {
   breadcrumb: ReactNode;
@@ -14,7 +15,7 @@ export default function ProductDetailLayout({
   recommendations,
 }: Props) {
   return (
-    <div className="mx-auto my-16 w-full max-w-[1680px] px-4">
+    <PageContainer>
       <div>{breadcrumb}</div>
 
       <div className="mt-16 flex flex-col justify-between gap-10 lg:flex-row">
@@ -26,6 +27,6 @@ export default function ProductDetailLayout({
       </div>
 
       {recommendations}
-    </div>
+    </PageContainer>
   );
 }

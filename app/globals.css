@@ -1,1 +1,57 @@
 @import "tailwindcss";
+
+:root {
+  --theme-color-canvas: #ffffff;
+  --theme-color-surface: #ffffff;
+  --theme-color-surface-muted: #f5f5f5;
+  --theme-color-text: #171717;
+  --theme-color-text-muted: #5f6368;
+  --theme-color-border: #d4d4d4;
+  --theme-color-primary: #171717;
+  --theme-color-primary-hover: #333333;
+  --theme-color-on-primary: #ffffff;
+  --theme-color-accent: #1d4ed8;
+  --theme-color-danger: #b91c1c;
+  --theme-color-danger-surface: #fef2f2;
+  --theme-color-success: #15803d;
+  --theme-color-warning: #92400e;
+  --theme-color-focus: #171717;
+  --theme-color-skeleton: #e5e7eb;
+  --theme-color-overlay: rgb(0 0 0 / 35%);
+  --theme-radius-sm: 0.25rem;
+  --theme-radius-md: 0.375rem;
+  --theme-radius-lg: 0.5rem;
+  --theme-shadow-card: 0 10px 20px rgb(0 0 0 / 10%);
+  --theme-content-width: 105rem;
+}
+
+@theme inline {
+  --color-canvas: var(--theme-color-canvas);
+  --color-surface: var(--theme-color-surface);
+  --color-surface-muted: var(--theme-color-surface-muted);
+  --color-text: var(--theme-color-text);
+  --color-text-muted: var(--theme-color-text-muted);
+  --color-border: var(--theme-color-border);
+  --color-primary: var(--theme-color-primary);
+  --color-primary-hover: var(--theme-color-primary-hover);
+  --color-on-primary: var(--theme-color-on-primary);
+  --color-accent: var(--theme-color-accent);
+  --color-danger: var(--theme-color-danger);
+  --color-danger-surface: var(--theme-color-danger-surface);
+  --color-success: var(--theme-color-success);
+  --color-warning: var(--theme-color-warning);
+  --color-focus: var(--theme-color-focus);
+  --color-skeleton: var(--theme-color-skeleton);
+  --color-overlay: var(--theme-color-overlay);
+  --radius-sm: var(--theme-radius-sm);
+  --radius-md: var(--theme-radius-md);
+  --radius-lg: var(--theme-radius-lg);
+  --shadow-card: var(--theme-shadow-card);
+  --spacing-content: var(--theme-content-width);
+}
+
+@layer base {
+  body { background: var(--theme-color-canvas); color: var(--theme-color-text); }
+  button:not(:disabled), select:not(:disabled) { cursor: pointer; }
+  button:disabled, select:disabled { cursor: not-allowed; }
+}

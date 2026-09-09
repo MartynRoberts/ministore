@@ -2,6 +2,9 @@
 
 import { useActionState, useState } from "react";
 import { updateInventory } from "@/app/actions/orders";
+import { Button } from "@/components/ui/Button";
+import { TextInput } from "@/components/ui/FormControls";
+import { StatusMessage } from "@/components/ui/Layout";
 
 export default function InventoryControls({
   productId,
@@ -23,7 +26,7 @@ export default function InventoryControls({
         On-hand stock for {title}
       </label>
       <fieldset disabled={pending} className="flex flex-wrap gap-2">
-        <input
+        <TextInput
           id={`stock-${productId}`}
           name="stock"
           type="number"
@@ -34,20 +37,20 @@ export default function InventoryControls({
           required
           value={stock}
           onChange={(event) => setStock(event.target.value)}
-          className="w-24 rounded border p-2"
+          className="w-24"
         />
-        <button className="rounded border px-3 py-2 font-medium">
+        <Button type="submit" size="sm">
           {pending ? "Saving…" : "Save"}
-        </button>
-        <button type="button" onClick={() => setStock("0")} className="rounded border px-2 py-1 text-sm">
+        </Button>
+        <Button size="sm" variant="secondary" onClick={() => setStock("0")}>
           Sold out
-        </button>
-        <button type="button" onClick={() => setStock("3")} className="rounded border px-2 py-1 text-sm">
+        </Button>
+        <Button size="sm" variant="secondary" onClick={() => setStock("3")}>
           Low stock
-        </button>
+        </Button>
       </fieldset>
-      {state.error && <p role="alert" className="text-sm text-red-700">{state.error}</p>}
-      {state.success && <p role="status" className="text-sm text-green-700">{state.success}</p>}
+      {state.error && <StatusMessage role="alert" className="text-sm">{state.error}</StatusMessage>}
+      {state.success && <StatusMessage role="status" tone="success" className="text-sm">{state.success}</StatusMessage>}
     </form>
   );
 }

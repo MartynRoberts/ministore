@@ -4,6 +4,7 @@ import ProductScroller from "@/components/ProductScroller";
 import Skeleton from "@/components/Skeleton";
 import { formatGBP } from "@/utils/money";
 import type { Product } from "@/types";
+import { PageContainer } from "@/components/ui/Layout";
 
 type Props = {
   product?: Product;
@@ -20,7 +21,7 @@ export default function ProductDetailView({
     product?.category.replaceAll("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()) ?? "";
 
   return (
-    <div className="mx-auto my-16 w-full max-w-[1680px] px-4">
+    <PageContainer>
       <div className="mb-6">
         {loading ? (
           <Skeleton className="h-4 w-[220px]" />
@@ -77,7 +78,7 @@ export default function ProductDetailView({
                   href={`/products?category=${encodeURIComponent(
                     product!.category
                   )}`}
-                  className="text-gray-600 underline hover:text-black"
+                  className="text-text-muted underline hover:text-text"
                 >
                   {categoryTitle}
                 </Link>
@@ -94,7 +95,7 @@ export default function ProductDetailView({
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="w-[220px] shrink-0 overflow-hidden rounded-lg border border-gray-300"
+                className="w-[220px] shrink-0 overflow-hidden rounded-lg border border-border bg-surface"
               >
                 <Skeleton className="aspect-square w-full" />
                 <div className="p-4">
@@ -113,6 +114,6 @@ export default function ProductDetailView({
           viewAllHref="/products"
         />
       )}
-    </div>
+    </PageContainer>
   );
 }

@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { Product } from "@/types";
-import SearchBar from "@/components/SearchBar";
 import ProductCard from "@/components/ProductCard";
 import { useShop } from "@/app/ShopProvider";
+import { Button } from "@/components/ui/Button";
+import { PageContainer } from "@/components/ui/Layout";
 
 type Props = {
   products: Product[];
@@ -31,22 +32,22 @@ export default function FavouritesClient({ products }: Props) {
 
   if (!search.trim() && favs.length > 0 && filtered.length === 0) {
     return (
-      <div className="mx-auto w-full max-w-[1680px] px-4 my-16">
+      <PageContainer>
         <h4>Your favourites could not be found.</h4>
-        <button onClick={clearFavourites}>Clear favourites</button>
+        <Button variant="secondary" onClick={clearFavourites}>Clear favourites</Button>
         <Link href="/products">← Browse products</Link>
-      </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="mx-auto w-full max-w-[1680px] px-4 my-16">
+    <PageContainer>
       <h1 className="text-xl font-bold mb-8">Favourites</h1>
 
       {favs.length > 0 && search && (
-        <button id="clear" onClick={clearFilters} className="mt-3">
+        <Button id="clear" variant="ghost" size="sm" onClick={clearFilters} className="mt-3">
           Clear search
-        </button>
+        </Button>
       )}
 
       {!filtered.length &&
@@ -57,7 +58,7 @@ export default function FavouritesClient({ products }: Props) {
             <Link href="/products">← Browse products</Link>
           </>
         ) : (
-          <h4>No favourites match "{search.trim()}".</h4>
+          <h4>No favourites match &quot;{search.trim()}&quot;.</h4>
         ))}
 
       {filtered.length > 0 && (
@@ -73,6 +74,6 @@ export default function FavouritesClient({ products }: Props) {
           ))}
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }

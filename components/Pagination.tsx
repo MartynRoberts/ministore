@@ -54,40 +54,46 @@ export default function Pagination({
 
   return (
     <nav aria-label="Pagination" className="mt-4 flex items-center gap-2">
-      <button
+      <Button
+        variant="secondary"
+        size="sm"
         type="button"
         onClick={() => changePage(page - 1)}
         disabled={page === 1}
         aria-label="Previous page"
       >
         Prev
-      </button>
+      </Button>
 
       {visiblePages.map((item, index) =>
         item === "..." ? (
           <span key={`ellipsis-${index}`}>...</span>
         ) : (
-          <button
+          <Button
+            variant={page === item ? "primary" : "secondary"}
+            size="sm"
             type="button"
             key={item}
             onClick={() => changePage(item)}
             aria-current={page === item ? "page" : undefined}
             aria-label={`Page ${item}`}
-            className={page === item ? "font-bold" : "font-normal"}
           >
             {item}
-          </button>
+          </Button>
         )
       )}
 
-      <button
+      <Button
+        variant="secondary"
+        size="sm"
         type="button"
         onClick={() => changePage(page + 1)}
         disabled={page === totalPages}
         aria-label="Next page"
       >
         Next
-      </button>
+      </Button>
     </nav>
   );
 }
+import { Button } from "@/components/ui/Button";

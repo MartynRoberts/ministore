@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageContainer } from "@/components/ui/Layout";
 import { getCurrentSessionId } from "@/app/actions/shop";
 import { getShopStore } from "@/lib/shop-store";
 import { formatMoney } from "@/lib/money";
@@ -9,7 +10,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
   const sessionId = await getCurrentSessionId();
   const { id } = await searchParams;
   const draft = sessionId && id ? getShopStore().getCheckout(sessionId, id) : null;
-  return <div className="mx-auto my-16 max-w-3xl px-4">
+  return <PageContainer className="max-w-3xl">
     <h1 className="mb-6 text-2xl font-bold">Checkout</h1>
     {draft ? <>
       <p>Reservation expires at {new Date(draft.expiresAt).toLocaleTimeString("en-GB", { timeZone: "Europe/London" })} (UK time).</p>
@@ -23,5 +24,5 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
       <Link href="/checkout" className="mt-4 block underline">Start a new checkout</Link>
     </> : <>{id && <p>Your reservation expired or was replaced. Start checkout again to reserve your items.</p>}<StartCheckout /></>}
     <Link href="/basket" className="mt-6 block underline">Return to basket</Link>
-  </div>;
+  </PageContainer>;
 }

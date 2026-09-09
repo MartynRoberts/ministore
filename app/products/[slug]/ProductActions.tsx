@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useShop } from "@/app/ShopProvider";
 
 import { getVariants } from "@/lib/basket";
+import { Button } from "@/components/ui/Button";
 
 export default function ProductActions({
   productId,
@@ -32,18 +33,15 @@ export default function ProductActions({
               const selected = selectedSize === variantId;
 
               return (
-                <button
+                <Button
+                  variant={selected ? "primary" : "secondary"}
+                  size="sm"
                   key={size}
                   onClick={() => setSelectedSize(variantId)}
-                  className={`h-10 w-12 mb-8 cursor-pointer rounded border text-sm font-medium transition
-                    ${
-                      selected
-                        ? "border-black bg-black text-white"
-                        : "border-gray-300 hover:border-black"
-                    }`}
+                  className="mb-8 h-10 w-12 px-0"
                 >
                   {size}
-                </button>
+                </Button>
               );
             })}
           </div>
@@ -52,29 +50,27 @@ export default function ProductActions({
 
       {/* Action buttons */}
       <div className="flex items-center gap-3">
-        <button
+        <Button
+          size="lg"
           onClick={() => addToBasket(productId, selectedSize ?? variants[0].id)}
           disabled={pending || (isClothing && !selectedSize)}
-          className={`h-14 mb-8 flex-1 rounded-md px-6 text-lg font-semibold transition
-            ${
-              isClothing && !selectedSize
-                ? "bg-gray-200 cursor-not-allowed text-gray-500"
-                : "bg-black hover:bg-gray-800 cursor-pointer text-white"
-            }`}
+          className="mb-8 flex-1"
         >
           Add to basket
-        </button>
+        </Button>
 
-        <button
+        <Button
+          variant="secondary"
+          size="icon"
           disabled={pending}
           onClick={() => toggleFav(productId)}
           aria-label={isFav ? "Remove from favourites" : "Add to favourites"}
-          className="flex h-14 w-14 mb-8 cursor-pointer items-center justify-center rounded-md border border-gray-300 transition hover:bg-gray-100"
+          className="mb-8 h-14 w-14"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className={`h-6 w-6 ${
-              isFav ? "fill-red-500 stroke-red-500" : "stroke-gray-700"
+              isFav ? "fill-danger stroke-danger" : "stroke-text-muted"
             }`}
             fill={isFav ? "currentColor" : "none"}
             viewBox="0 0 24 24"
@@ -90,7 +86,7 @@ export default function ProductActions({
           <span className="sr-only">
             {isFav ? "Remove from favourites" : "Add to favourites"}
           </span>
-        </button>
+        </Button>
       </div>
     </div>
   );

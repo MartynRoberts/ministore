@@ -79,10 +79,10 @@ export default function ProductScroller({
           <Link
             key={product.id}
             href={`/products/${product.id}`}
-            className="block min-w-[220px] max-w-[220px] shrink-0 overflow-hidden rounded-lg border border-gray-300 text-inherit no-underline transition hover:-translate-y-1 hover:shadow-md"
+            className="block min-w-[220px] max-w-[220px] shrink-0 overflow-hidden rounded-lg border border-border bg-surface text-inherit no-underline transition hover:-translate-y-1 hover:shadow-card"
             draggable={false}
           >
-            <div className="aspect-square bg-gray-50 p-4">
+            <div className="aspect-square bg-surface-muted p-4">
               <img
                 src={product.image}
                 alt={product.title}

@@ -1,4 +1,6 @@
 "use client";
+import { Button } from "@/components/ui/Button";
+import { PageContainer } from "@/components/ui/Layout";
 
 export default function Error({
   error,
@@ -8,9 +10,9 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <div className="mx-auto w-full max-w-[1680px] px-4 my-16">
+    <PageContainer>
       <p>Error: {error.message}</p>
-      <button onClick={reset}>Try again</button>
-    </div>
+      <Button onClick={reset}>Try again</Button>
+    </PageContainer>
   );
 }

@@ -1,5 +1,6 @@
 import OrderControls from "@/components/OrderControls";
 import Link from "next/link";
+import { PageContainer } from "@/components/ui/Layout";
 import { notFound } from "next/navigation";
 import { getCurrentSessionId } from "@/app/actions/shop";
 import { getShopStore } from "@/lib/shop-store";
@@ -11,7 +12,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
   const { id } = await params;
   const order = getShopStore().getOrder(sessionId, id);
   if (!order) notFound();
-  return <div className="mx-auto my-16 max-w-3xl px-4">
+  return <PageContainer className="max-w-3xl">
     <h1 className="mb-4 text-2xl font-bold">Your demo order</h1>
     <p>No real money is charged and no items will be shipped.</p>
     <p className="mt-4">Status: <strong>{order.status}</strong> · {order.paymentStatus}</p>
@@ -29,5 +30,5 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
     <h2 className="font-bold">Delivery details</h2>
     <p>{order.customer.name}</p><p>{order.customer.address}</p><p>{order.customer.city}, {order.customer.postcode}</p>
     <Link href="/products" className="mt-6 block underline">Continue shopping</Link>
-  </div>;
+  </PageContainer>;
 }

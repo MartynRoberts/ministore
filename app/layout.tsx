@@ -29,15 +29,15 @@ export default async function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
-      <body className="bg-white">
+      <body className="bg-canvas text-text">
         <ShopProvider initialSession={session}>
           <div className="flex min-h-screen w-full flex-col">
-            <header className="w-full border-b border-neutral-200 bg-white">
-              <div className="mx-auto grid w-full max-w-[1680px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-4 px-4 py-5 sm:gap-x-8 xl:grid-cols-[auto_minmax(16rem,48rem)_minmax(0,1fr)] xl:py-6">
+            <header className="w-full border-b border-border bg-surface">
+              <div className="mx-auto grid w-full max-w-content grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-4 px-4 py-5 sm:gap-x-8 xl:grid-cols-[auto_minmax(16rem,48rem)_minmax(0,1fr)] xl:py-6">
                 <Link
                   href="/"
                   aria-label="MiniStore home"
-                  className="inline-flex shrink-0 -translate-y-[3px] flex-col self-center text-black no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
+                  className="inline-flex shrink-0 -translate-y-[3px] flex-col self-center text-text no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus"
                 >
                   <span
                     aria-hidden="true"

@@ -1,7 +1,8 @@
 export default function Loading() {
   return (
-    <div className="mx-auto w-full max-w-[1680px] px-4 my-16">
+    <PageContainer>
       <p>Loading...</p>
-    </div>
+    </PageContainer>
   )
 }
+import { PageContainer } from "@/components/ui/Layout";

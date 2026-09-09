@@ -37,8 +37,8 @@ const footerColumns = [
 
 export default function SiteFooter() {
   return (
-    <footer className="w-full bg-neutral-800 text-white">
-      <div className="mx-auto w-full max-w-[1680px] px-4 py-4 md:py-16">
+    <footer className="w-full bg-primary text-on-primary">
+      <div className="mx-auto w-full max-w-content px-4 py-4 md:py-16">
         {/* Desktop / tablet */}
         <div className="hidden md:grid md:grid-cols-4 md:gap-16">
           {footerColumns.map((column) => (
@@ -50,7 +50,7 @@ export default function SiteFooter() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-neutral-300 transition hover:text-white hover:underline"
+                      className="opacity-80 transition hover:opacity-100 hover:underline"
                     >
                       {link.label}
                     </Link>
@@ -66,7 +66,7 @@ export default function SiteFooter() {
           {footerColumns.map((column) => (
             <details
               key={column.title}
-              className="border-b border-neutral-600 py-3 group"
+              className="group border-b border-border/40 py-3"
             >
               <summary className="flex items-center justify-between py-2 text-lg font-semibold cursor-pointer">
                 {column.title}
@@ -88,7 +88,7 @@ export default function SiteFooter() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-neutral-300 transition hover:text-white"
+                      className="opacity-80 transition hover:opacity-100"
                     >
                       {link.label}
                     </Link>
