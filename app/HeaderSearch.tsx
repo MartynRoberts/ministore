@@ -44,7 +44,7 @@ export default function HeaderSearch() {
 
   const resultsHref = trimmed ? `/products?search=${encodeURIComponent(trimmed)}` : "/products";
   return (
-    <div ref={containerRef} className="relative w-full max-w-xl" onBlur={(event) => {
+    <div ref={containerRef} className="relative col-span-2 row-start-2 w-full xl:col-span-1 xl:col-start-2 xl:row-start-1 xl:max-w-3xl" onBlur={(event) => {
       if (!event.currentTarget.contains(event.relatedTarget)) setIsOpen(false);
     }}>
       <form role="search" onSubmit={(event) => {
@@ -63,7 +63,7 @@ export default function HeaderSearch() {
           onFocus={() => setIsOpen(true)}
           onChange={(event) => { setQuery(event.target.value); setIsOpen(true); }}
           onKeyDown={(event) => { if (event.key === "Escape") setIsOpen(false); }}
-          className="w-full p-2 border"
+          className="h-11 w-full rounded-sm border border-neutral-400 bg-white px-4 text-base outline-none transition placeholder:text-neutral-500 focus:border-black focus:ring-1 focus:ring-black"
         />
       </form>
       {isOpen && eligible && (
