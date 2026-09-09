@@ -19,6 +19,7 @@ export default function CheckoutForm({ checkoutId }: { checkoutId: string }) {
       <label>Simulated outcome<select name="payment" defaultValue="approve" className="mt-1 block w-full border p-2">
         <option value="approve">Payment approved</option>
         <option value="decline">Payment declined</option>
+        <option value="pending">Leave payment pending</option>
       </select></label>
       <button type="submit" className="rounded bg-black p-4 font-semibold text-white disabled:opacity-50">{pending ? "Placing order…" : "Place demo order"}</button>
     </fieldset>

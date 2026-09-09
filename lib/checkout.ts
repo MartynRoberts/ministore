@@ -1,11 +1,12 @@
 import { createHash, randomUUID } from "node:crypto";
 import { quoteBasket, validateQuantity, type BasketQuote, type StoredShop } from "./basket";
+import type { OrderStatus, OrderEvent } from "./order-status";
 import type { Product } from "@/types";
 
 export type CheckoutProduct = Product & { stock: number };
 export type Customer = { name: string; email: string; address: string; city: string; postcode: string };
 export type CheckoutDraft = { id: string; fingerprint: string; quote: BasketQuote; expiresAt: number };
-export type Order = { id: string; createdAt: string; customer: Customer; quote: BasketQuote; paymentStatus: "simulated-paid" };
+export type Order = { id: string; createdAt: string; customer: Customer; quote: BasketQuote; paymentStatus: "simulated-paid" | "simulated-pending" | "simulated-refunded" | "simulated-cancelled"; status?: OrderStatus; events?: OrderEvent[]; inventoryCommitted?: boolean };
 export type CheckoutState = { error?: string };
 
 export function fingerprint(quote: BasketQuote) {
@@ -45,5 +46,5 @@ export function parseCustomer(form: FormData): Customer {
 }
 
 export function createCheckoutDraft(quote: BasketQuote): CheckoutDraft {
-  return { id: randomUUID(), fingerprint: fingerprint(quote), quote, expiresAt: Date.now() + 30 * 60 * 1000 };
+  return { id: randomUUID(), fingerprint: fingerprint(quote), quote, expiresAt: Date.now() + 15 * 60 * 1000 };
 }
