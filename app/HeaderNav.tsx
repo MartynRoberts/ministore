@@ -10,18 +10,18 @@ export default function HeaderNav() {
   const basketCount = basket.count;
 
   return (
-    <div className="ml-auto flex items-center gap-8">
-      <Link href="/orders" className="hover:underline">Orders</Link>
-      <Link href="/favourites" className="hover:underline">Favourites</Link>
+    <nav aria-label="Account and basket" className="flex items-center justify-self-end gap-1 text-xs min-[400px]:gap-3 min-[400px]:text-sm sm:gap-6 sm:text-base xl:gap-8">
+      <Link href="/orders" className="inline-flex min-h-11 items-center px-1 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2">Orders</Link>
+      <Link href="/favourites" className="inline-flex min-h-11 items-center px-1 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2">Favourites</Link>
 
-      <Link href="/basket" className="relative inline-flex items-center justify-center">
+      <Link href="/basket" className="relative inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-sm hover:bg-neutral-100 focus-visible:outline-2 focus-visible:outline-offset-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           stroke="currentColor"
           strokeWidth="2"
           fill="none"
-          className="h-7 w-7"
+          className="h-6 w-6 sm:h-7 sm:w-7"
         >
           <path d="M3 9h18l-2 10H5L3 9z" />
           <path d="M8 9l4-6 4 6" />
@@ -35,6 +35,6 @@ export default function HeaderNav() {
 
         <span className="sr-only">Basket ({basketCount})</span>
       </Link>
-    </div>
+    </nav>
   );
 }
