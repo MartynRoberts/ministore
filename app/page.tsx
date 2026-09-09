@@ -17,13 +17,11 @@ export default async function HomePage() {
 
   return (
     <div className="pb-16">
-      <div className="relative mb-8">
-        <img
-          src="/home-hero.jpg"
-          alt="Mini Store"
-          className="block w-full"
-        />
-
+      <section
+        aria-label="Mini Store"
+        className="relative mb-8 min-h-[clamp(28rem,65vh,50rem)] bg-cover bg-center bg-fixed"
+        style={{ backgroundImage: "url('/home-hero.jpg')" }}
+      >
         <div className="absolute inset-0 bg-overlay" />
 
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-on-primary">
@@ -38,7 +36,7 @@ export default async function HomePage() {
             Shop now
           </Link>
         </div>
-      </div>
+      </section>
 
       <div className="mx-auto w-full max-w-content px-4">
         <p className="mb-6">Discover great products across our categories.</p>
