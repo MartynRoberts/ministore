@@ -1,210 +1,288 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MiniStore
 
-## Getting Started
+MiniStore is a full-stack ecommerce demonstration built to show how I approach
+production-style frontend architecture, server-side business rules, data
+normalization, persistence, accessibility, and automated testing.
 
-First, run the development server:
+The storefront uses DummyJSON as its supplier feed, but the application owns a
+stable product contract and all transactional state. Browsing can fall back to a
+local product snapshot, while checkout always validates current supplier data,
+server-calculated prices, and shared inventory before creating an order.
+
+> This is a portfolio project. Payments, fulfilment, emails, and customer
+> accounts are simulated; no money is charged and no goods are shipped.
+
+## What the application demonstrates
+
+- A responsive storefront with a sticky header, fixed hero treatment, category
+  discovery, product recommendations, favourites, and a persistent basket.
+- Server-driven catalogue search with debounced suggestions, category facets,
+  sorting, pagination, bookmarkable URLs, and cancellation of stale requests.
+- A provider adapter that validates and normalizes DummyJSON payloads before
+  they reach the UI.
+- Server-authoritative basket pricing, delivery calculations, product variants,
+  inventory checks, and quantity limits.
+- Transactional stock reservations with expiry, protection against overselling,
+  and exactly-once stock release or commitment during order transitions.
+- A simulated checkout with validated UK delivery details, approved, declined,
+  and pending payment outcomes, immutable order snapshots, and idempotent retry
+  handling.
+- Session-scoped order history and cancellation controls.
+- A protected admin workspace for order lifecycle management and editable stock
+  scenarios, including sold-out and low-stock demonstrations.
+- A reusable design system based on semantic CSS theme variables and shared
+  React primitives for buttons, fields, cards, status messages, and layouts.
+- Automated domain, persistence, API, security, and component tests.
+
+## Technology
+
+| Area | Implementation |
+| --- | --- |
+| Framework | Next.js 16 App Router and React 19 |
+| Language | TypeScript, with a small amount of legacy JavaScript |
+| Styling | Tailwind CSS 4 and semantic CSS custom properties |
+| Persistence | Node SQLite through `node:sqlite` |
+| Product feed | Normalized DummyJSON with a local fallback |
+| Mutations | Next.js Server Actions |
+| Component tests | Jest, JSDOM, and React Testing Library |
+| Domain tests | Node's built-in test runner |
+| Deployment | Vercel through GitHub Actions |
+
+## Customer experience
+
+The homepage introduces the store through a responsive hero, category cards,
+and a horizontally scrollable Top Sellers collection. All product cards share
+the same hover and keyboard-focus treatment and expose direct basket and
+favourite actions.
+
+The catalogue is rendered from normalized server data. Search terms, category,
+sort order, favourites-only mode, and page number are stored in the URL. This
+makes result pages shareable and keeps filtering compatible with browser
+navigation. The header suggestion endpoint returns up to four lightweight
+matches after a 300 ms debounce; short searches do not issue a request.
+
+Product pages display the normalized product record and related products.
+Clothing categories expose MiniStore-owned S, M, L, and XL variants; other
+products use a Standard variant. Each variant is stored as an independent basket
+line.
+
+Basket data, favourites, and delivery preference persist in SQLite behind an
+opaque 30-day HTTP-only session cookie. The server recalculates every quote from
+the current catalogue. Monetary values are stored as integer pence, with GBP as
+the display currency. Standard delivery is £3.50 and becomes free at £100;
+premium is £4.50 and next-day is £5.00.
+
+Starting checkout reserves shared stock for 15 minutes. The final submission
+revalidates the session, basket fingerprint, current price, inventory, delivery
+details, and simulated payment outcome. A unique checkout identifier makes
+retries idempotent. Orders are visible only to the session that created them.
+
+## Admin demonstration
+
+`/admin` redirects to `/admin/orders`. After signing in, a reviewer can:
+
+- inspect the 200 most recent demo orders;
+- move orders through valid lifecycle transitions;
+- review status history;
+- edit shared on-hand inventory;
+- create sold-out and low-stock scenarios; and
+- observe how active reservations constrain stock changes.
+
+Order transitions are explicit:
+
+```text
+pending → paid → processing → shipped
+    └──────────────→ cancelled
+```
+
+The admin password is configured through `MINISTORE_ADMIN_PASSWORD`. For the
+portfolio demo it can intentionally be set to `password`. Login attempts are
+rate-limited in memory, password comparison uses constant-time comparison, and
+the signed admin cookie is HTTP-only, SameSite Strict, secure in production, and
+expires after eight hours.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    Browser[Next.js UI] --> Pages[Server Components]
+    Browser --> Actions[Server Actions]
+    Browser --> Routes[Catalogue API routes]
+    Pages --> Catalogue[Catalogue service]
+    Routes --> Catalogue
+    Catalogue --> Adapter[DummyJSON adapter]
+    Adapter --> DummyJSON[(DummyJSON)]
+    Adapter --> Snapshot[(Local snapshot)]
+    Actions --> Store[Shop store]
+    Actions --> Checkout[Checkout rules]
+    Checkout --> Supplier[Uncached supplier validation]
+    Store --> SQLite[(SQLite)]
+```
+
+The main boundaries are:
+
+- `lib/products.ts` validates unknown provider payloads and maps them to the
+  application-owned `Product` type.
+- `lib/api.ts` provides the cached browsing feed, a 10-second timeout, and local
+  fallback behaviour.
+- `lib/catalogue-query.ts` owns filtering, facets, relevance, sorting, and safe
+  pagination.
+- `lib/basket.ts` owns variants, quantities, integer-money quotes, and delivery
+  rules.
+- `lib/checkout.ts` owns customer validation, quote fingerprints, and checkout
+  draft creation.
+- `lib/shop-store.ts` owns SQLite transactions, sessions, reservations,
+  inventory, orders, and lifecycle consistency.
+- `app/actions` contains the mutation boundary for basket, checkout, admin, and
+  order operations.
+- `components/ui` contains the design-system primitives. Theme values are
+  defined in `app/globals.css` and exposed as semantic Tailwind utilities.
+
+### Project structure
+
+```text
+app/
+  actions/                 Server-side mutations
+  admin/orders/            Admin authentication, orders, and inventory
+  api/products/            Catalogue and suggestion endpoints
+  basket/ checkout/        Purchase journey
+  favourites/ orders/      Session-scoped customer features
+  products/                Catalogue and product detail routes
+components/
+  ui/                      Design-system primitives
+  ProductCard.tsx          Shared catalogue card
+  ProductScroller.tsx      Reusable horizontal collection
+hooks/                     Debouncing and URL filter behaviour
+lib/                       Domain services and persistence
+data/products.json         Offline browsing snapshot
+tests/                     Node server and domain tests
+__tests__/components/      Jest and Testing Library tests
+```
+
+## Routes and APIs
+
+| Route | Purpose |
+| --- | --- |
+| `/` | Homepage, categories, and Top Sellers |
+| `/products` | Searchable and filterable catalogue |
+| `/products/[id]` | Product details, variants, and recommendations |
+| `/favourites` | Products saved by the current session |
+| `/basket` | Basket editing, delivery selection, and totals |
+| `/checkout` | Reservation review and simulated order submission |
+| `/orders` | Current session's order history |
+| `/orders/[id]` | Order details and valid customer controls |
+| `/admin/orders` | Protected order and inventory management |
+
+`GET /api/products` accepts `q` or `search`, `category`, `sort`, `page`,
+`pageSize`, and `favs=true`. It returns normalized items, total counts, safe page
+metadata, and category facets. Responses are private and not shared by caches.
+
+`GET /api/products/suggestions?q=...` returns at most four normalized summaries.
+Queries shorter than two characters return an empty result. Successful responses
+may be cached publicly for 60 seconds.
+
+## Local development
+
+Requirements:
+
+- Node.js 24 or newer
+- npm
+
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/MartynRoberts/ministore.git
+cd ministore
+npm ci
+```
+
+Create `.env.local`:
+
+```dotenv
+MINISTORE_ADMIN_PASSWORD=password
+# Optional; defaults to .data/ministore.sqlite
+MINISTORE_DB_PATH=.data/ministore.sqlite
+```
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). SQLite tables and the local
+database file are created lazily on the first state-changing request.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Testing and quality checks
 
-## Testing
+MiniStore has two complementary test layers:
 
-MiniStore has two complementary automated test layers:
+- **36 Node tests** cover API normalization and failure handling, catalogue
+  queries, server actions, basket rules, SQLite persistence, checkout security,
+  competing stock reservations, order transitions, and admin authorization.
+- **13 Jest and React Testing Library tests** cover shared UI primitives,
+  accessible form behaviour, pagination, product-card interactions, and the
+  admin password experience.
 
-- **Server and domain tests** use Node's built-in test runner. The 36 tests in
-  `tests/*.test.cjs` cover product normalization and fallback behaviour,
-  catalogue search and pagination, basket pricing and persistence, checkout and
-  inventory transactions, order lifecycles, session isolation, and admin
-  authentication.
-- **Component tests** use Jest, JSDOM, React Testing Library, jest-dom, and
-  `user-event`. The tests in `__tests__/components` cover the shared design
-  system, native form behaviour, pagination, product-card actions, and admin
-  password validation and visibility controls.
-
-Run the complete suite before merging a change:
+Run the complete 49-test suite and generate frontend coverage:
 
 ```bash
 npm run test:ci
 ```
 
-This runs all server tests followed by the Jest component tests in CI mode and
-generates a coverage report in `coverage/`. The Jest report measures the
-browser-facing TypeScript and React files configured in `jest.config.cjs`; the
-Node server tests are validated separately and are not included in those Jest
-coverage percentages.
-
-Other useful commands:
+Additional commands:
 
 | Command | Purpose |
 | --- | --- |
-| `npm test` | Run the Jest and React Testing Library component suite once. |
-| `npm run test:watch` | Re-run relevant Jest tests while files change. |
-| `npm run test:coverage` | Run Jest and write HTML and terminal coverage reports. |
-| `npm run test:server` | Run the Node server and domain regression suite. |
-| `npm run test:ci` | Run both suites and collect Jest coverage. |
-| `npx tsc --noEmit` | Type-check application and test TypeScript. |
-| `npm run lint` | Lint application and test sources. |
-| `npm run build` | Verify the production Next.js build. |
+| `npm test` | Run component tests once |
+| `npm run test:watch` | Run relevant component tests while developing |
+| `npm run test:coverage` | Generate terminal and HTML Jest coverage |
+| `npm run test:server` | Run the domain and server suite |
+| `npm run lint` | Run ESLint |
+| `npx tsc --noEmit` | Type-check source and tests |
+| `npm run build` | Create and validate the production build |
 
-Jest is configured through `jest.config.cjs`, with global DOM matchers loaded by
-`jest.setup.cjs`. `next/jest` handles the Next.js transforms, CSS and image
-imports, environment loading, and the `@/` path alias. Component tests run in
-`jest-environment-jsdom`; the existing `.cjs` server tests remain assigned to
-Node's test runner through an explicit Jest `testMatch`.
+Component tests query accessible roles, labels, and visible text and use
+`user-event` for interaction. Domain tests exercise authoritative rules and real
+SQLite transactions. Jest coverage measures the configured frontend source;
+the separate Node suite is not included in the Jest percentage.
 
-Write component tests from the user's perspective. Query elements by accessible
-role, label, or visible text; use `userEvent.setup()` for interactions; and test
-observable outcomes rather than component state or implementation details. Mock
-only external boundaries such as server actions or navigation. Add server tests
-for pricing, persistence, authorization, concurrency, and lifecycle rules. Avoid
-snapshot-only tests for interactive behaviour.
+## Data, resilience, and security decisions
 
-For a pull request, the expected local validation is:
+- Browsing uses a cached DummyJSON feed with one-hour revalidation. Network,
+  HTTP, JSON, and schema failures fall back to `data/products.json`.
+- Checkout deliberately bypasses that fallback and fetches uncached supplier
+  data. An order cannot be approved when current price and stock cannot be
+  verified.
+- All mutation inputs are validated on the server. Product IDs, variants,
+  quantities, delivery methods, checkout ownership, and order transitions are
+  treated as untrusted.
+- Basket and order cookies contain opaque identifiers or signed tokens rather
+  than customer or commerce data.
+- SQLite transactions coordinate inventory across connections and roll back
+  failed order operations without losing reservations or basket contents.
+- Product images remain remote DummyJSON assets and therefore require network
+  access even when catalogue text uses the local snapshot.
 
-```bash
-npm run test:ci
-npm run lint
-npm run build
-```
+## Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Pushes to `main` trigger `.github/workflows/deploy.yml`, which builds and deploys
+the project to Vercel. The workflow requires these GitHub repository secrets:
 
-## Learn More
+- `VERCEL_TOKEN`
+- `VERCEL_ORG_ID`
+- `VERCEL_PROJECT_ID`
 
-To learn more about Next.js, take a look at the following resources:
+The production environment must also define `MINISTORE_ADMIN_PASSWORD`. The
+default SQLite store is appropriate for this single-instance demonstration. A
+multi-instance or serverless production commerce system would use a shared
+managed database, durable job processing, account-based identity, a real payment
+provider with verified webhooks, and integrations for fulfilment and customer
+communications.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scope
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## Product API
-
-`lib/api.ts` exposes `getProducts(): Promise<Product[]>` and
-`getProduct(id): Promise<Product | null>`. The UI uses the provider-independent
-`Product` type in `types/index.ts`; `lib/products.ts` validates DummyJSON payloads
-and maps `thumbnail` (or the first gallery image) to `image`.
-
-The feed is https://dummyjson.com/products?limit=0. The server catalogue service
-queries this cached feed for consistent combined filters and facets. Requests have a
-10-second timeout and a one-hour Next.js revalidation interval. HTTP, network,
-JSON, and validation errors use `data/products.json`, a DummyJSON snapshot fetched
-on 2026-09-07. A detail 404 returns null. Images still require network access.
-Refresh the snapshot from the same endpoint, optionally selecting
-`id,title,description,price,category,thumbnail,images`; retain its products envelope.
-
-See the persistent-basket section below for current session storage. Prices retain the existing shop display convention; no currency conversion is applied.
-
-Run the focused API regression file with `node --test tests/api.test.cjs`, or see
-[Testing](#testing) for the complete validation workflow.
-
-## Server-driven catalogue and search
-
-`lib/catalogue.ts` is the server service used by the products page and HTTP routes.
-`lib/catalogue-query.ts` defines the normalized query/result contract and applies
-search, category, favourites, sorting, and pagination before returning results.
-The browser receives one page (24 products by default, maximum 48).
-
-- `GET /api/products?q=shirt&category=mens-shirts&sort=low-high&page=1&pageSize=24`
-  returns `{ items, total, page, pageSize, totalPages, facets: { categories } }`.
-  Sorts: `relevance`, `low-high`, `high-low`, `a-z`, `z-a`.
-  The existing `search` query parameter is also supported; `q` takes precedence.
-- Category facets contain `{ value, count }`, reflecting search and favourites
-  before category selection. All search terms must match title, description or
-  category; relevance prefers title matches and ties use product ID.
-- `favs=true` uses the current session's favourites. Product API responses are
-  private and not cached by the browser/shared CDN.
-- `GET /api/products/suggestions?q=shirt` returns at most four lightweight
-  suggestions. Queries shorter than two characters return an empty list.
-- The header waits 300 ms after typing, cancels superseded requests, and displays
-  loading, empty and failure states. Enter and the all-results link navigate to
-  the full search page. Escape or leaving the search panel closes suggestions.
-- Product-page navigation uses Next.js server rendering and calls the catalogue
-  service directly, without an internal HTTP round trip. Search, category, sort,
-  favourites and page remain bookmarkable. Controls show pending navigation.
-
-DummyJSON remains the provider, with a cached full catalogue queried on the
-server. This is a demo implementation of the search-service boundary, not a
-production search index. A larger catalogue should replace that implementation
-with indexed queries while preserving the storefront contract. Basket persistence and variants are described below.
-
-## Persistent basket and variants
-
-Requires Node.js 24+. Basket lines, favourites and the delivery choice are stored
-in SQLite at `.data/ministore.sqlite` (ignored by Git). Override the runtime path
-with `MINISTORE_DB_PATH`. Use a persistent disk for this single-host demo; a
-multi-instance/serverless deployment needs a shared database implementation.
-The database is created lazily on the first session mutation.
-
-Only a random session ID is stored in the `ministore_session_v2` cookie. It is
-HttpOnly, SameSite=Lax, Secure in production, and expires after 30 days. Old
-cookie-based baskets and favourites start empty; their untrusted contents are
-not imported into the database. The database file must be preserved across
-restarts to preserve sessions. Expired-session database cleanup is not yet scheduled.
-
-`lib/basket.ts` defines the variant and basket contracts. Clothing products use
-MiniStore demo variants S/M/L/XL; other products have one Standard variant.
-These are not supplier inventory records. Basket mutations validate the product,
-variant and whole-number quantity (0 removes a line; maximum 99). Each size has
-its own basket line. SQLite transactions prevent lost updates within a session.
-
-The server returns a fresh basket quote after each mutation. Monetary amounts
-in that quote are integer pence with currency GBP, retaining the existing demo
-price convention without currency conversion. Standard delivery costs £3.50,
-or is free at £100; premium costs £4.50 and next-day £5.00. The server recalculates
-these amounts when quantities or delivery change. A catalogue outage can still
-use the demo fallback; these are browsing estimates, not payment authorisation.
-
-Checkout supports simulated payment and persisted demo orders, as described below. Live stock reservations remain future work.
-
-See [Testing](#testing) for the complete server and component test commands.
-
-## Demo checkout and orders
-
-Checkout collects UK delivery details and offers simulated payment approval or
-decline. It never collects card details, charges money, sends email or ships items.
-The initial review and final submission both fetch uncached DummyJSON prices and
-stock. Checkout stops on provider failure; the offline browsing catalogue cannot
-approve an order. Stock checks aggregate quantities across the demo size variants.
-
-Each review creates a session-bound checkout token valid for 30 minutes and a
-fingerprint of the reviewed lines, prices and delivery. Submission validates the
-customer details, current basket and live quote. Changes require a new review.
-A decline leaves the basket intact and permits retrying the same checkout.
-
-Approved demo payment stores an immutable order snapshot and clears the basket
-in one SQLite transaction. The unique checkout token prevents duplicate orders:
-retries return the existing order, including after a lost response. A second
-checkout tab cannot repurchase an emptied basket. Confirmation at `/orders/[id]`
-is restricted to the session that placed the order.
-
-This simulator checks supplier stock but does not reserve or decrement it.
-Production payments require a payment provider, verified webhooks, payment-attempt
-persistence/reconciliation, inventory reservations and fulfilment integration.
-Draft/order data is stored in the same private SQLite file; retention cleanup and
-an account-based order history remain future work.
-
-Run all checks with:
-
-```bash
-npm run test:ci
-npm run lint
-npm run build
-```
+MiniStore is intentionally a focused commerce simulator. It demonstrates the
+application boundaries and failure handling expected in a larger ecommerce
+platform without pretending that a portfolio deployment provides live payment,
+warehouse, identity, tax, or fulfilment services.
