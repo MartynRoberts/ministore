@@ -33,7 +33,7 @@ export default async function RootLayout({
       <body className="bg-canvas text-text">
         <ShopProvider initialSession={session}>
           <div className="flex min-h-screen w-full flex-col">
-            <header className="w-full border-b border-border bg-surface">
+            <header className="sticky top-0 z-50 w-full border-b border-border bg-surface">
               <div className="mx-auto grid w-full max-w-content grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-4 px-4 py-5 sm:gap-x-8 xl:grid-cols-[auto_minmax(16rem,48rem)_minmax(0,1fr)] xl:py-6">
                 <Link
                   href="/"
