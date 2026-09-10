@@ -60,6 +60,8 @@ describe("design-system primitives", () => {
     await user.selectOptions(screen.getByRole("combobox", { name: "Delivery" }), "next-day");
     expect(screen.getByRole("textbox", { name: "Name" })).toHaveValue("Morgan");
     expect(screen.getByRole("combobox", { name: "Delivery" })).toHaveValue("next-day");
+    expect(screen.getByRole("combobox", { name: "Delivery" })).toHaveClass("appearance-none", "pr-11");
+    expect(screen.getByRole("combobox", { name: "Delivery" }).parentElement?.querySelector("svg")).toBeInTheDocument();
   });
 
   test("layout primitives expose semantic theme classes and status attributes", () => {

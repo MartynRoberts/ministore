@@ -73,7 +73,8 @@ the current catalogue. Monetary values are stored as integer pence, with GBP as
 the display currency. Standard delivery is £3.50 and becomes free at £100;
 premium is £4.50 and next-day is £5.00.
 
-Starting checkout reserves shared stock for 15 minutes. The final submission
+Continuing from the basket reserves shared stock for 15 minutes and opens the
+checkout directly. The final submission
 revalidates the session, basket fingerprint, current price, inventory, delivery
 details, and simulated payment outcome. A unique checkout identifier makes
 retries idempotent. Orders are visible only to the session that created them.
@@ -172,7 +173,7 @@ __tests__/components/      Jest and Testing Library tests
 | `/products/[id]` | Product details, variants, and recommendations |
 | `/favourites` | Products saved by the current session |
 | `/basket` | Basket editing, delivery selection, and totals |
-| `/checkout` | Reservation review and simulated order submission |
+| `/checkout` | Validated delivery form, order summary, and simulated payment submission |
 | `/orders` | Current session's order history |
 | `/orders/[id]` | Order details and valid customer controls |
 | `/admin/orders` | Protected order and inventory management |

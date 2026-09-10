@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useShop } from "@/app/ShopProvider";
 import { MAX_QUANTITY, type DeliveryMethod } from "@/lib/basket";
 import { formatMoney } from "@/lib/money";
-import { Button, buttonStyles } from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/FormControls";
 import { Card, PageContainer, StatusMessage } from "@/components/ui/Layout";
 import { ChevronIcon } from "@/components/ui/ChevronIcon";
 import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
+import CheckoutButton from "./CheckoutButton";
 
 export default function BasketClient() {
   const { basket, setQty, setDelivery, pending } = useShop();
@@ -56,7 +57,7 @@ export default function BasketClient() {
         </Select>
         <p className="mb-4 flex justify-between"><span>Delivery</span><span>{money(basket.delivery)}</span></p>
         <p className="mb-4 flex justify-between border-t pt-4 font-bold"><span>Total</span><span>{money(basket.total)}</span></p>
-        {basket.canCheckout && !pending ? <Link href="/checkout" className={buttonStyles({ size: "lg", className: "w-full" })}>Review checkout</Link> : <Button disabled size="lg" className="w-full">Review checkout</Button>}
+        <CheckoutButton disabled={!basket.canCheckout || pending} />
       </aside>
     </div>}
   </PageContainer>;

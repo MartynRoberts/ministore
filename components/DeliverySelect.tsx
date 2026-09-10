@@ -28,7 +28,7 @@ export default function DeliverySelect({
         id="delivery"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-12 w-full appearance-none"
+        className="h-12 w-full"
       >
         <option value="">Select delivery option</option>
         {visibleOptions.map((option) => (
