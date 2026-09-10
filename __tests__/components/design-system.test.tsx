@@ -37,9 +37,10 @@ describe("design-system primitives", () => {
   });
 
   test("buttonStyles supports links using the same visual contract", () => {
-    expect(buttonStyles({ variant: "secondary", size: "sm" })).toEqual(
-      expect.stringContaining("bg-surface")
-    );
+    const styles = buttonStyles({ variant: "secondary", size: "sm" });
+    expect(styles).toEqual(expect.stringContaining("bg-surface"));
+    expect(styles).toEqual(expect.stringContaining("border-2"));
+    expect(styles).toEqual(expect.stringContaining("hover:bg-primary"));
   });
 
   test("text and select controls preserve native form behaviour", async () => {
