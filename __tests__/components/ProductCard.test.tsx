@@ -6,7 +6,7 @@ const product = {
   id: 7,
   title: "Test product",
   description: "A useful product",
-  category: "test-category",
+  category: "mens-shirts",
   image: "/product.jpg",
   price: 12.99,
 };
@@ -26,7 +26,7 @@ describe("ProductCard", () => {
 
     await user.click(screen.getByRole("button", { name: "Add to basket" }));
     await user.click(screen.getByRole("button", { name: "Add to favourites" }));
-    expect(onAddToBasket).toHaveBeenCalledWith(7);
+    expect(onAddToBasket).toHaveBeenCalledWith(7, "dummyjson-7-s");
     expect(onToggleFav).toHaveBeenCalledWith(7);
   });
 

@@ -3,12 +3,14 @@ import type { Product } from "@/types";
 import { formatGBP } from "../utils/money";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Layout";
+import { HeartIcon } from "@/components/ui/HeartIcon";
+import { getVariants } from "@/lib/basket";
 
 type Props = {
   product: Product;
   isFav: boolean;
   onToggleFav: (id: number) => void;
-  onAddToBasket: (id: number) => void;
+  onAddToBasket: (id: number, variantId?: string) => void;
 };
 
 export default function ProductCard({
@@ -34,9 +36,9 @@ export default function ProductCard({
         <p className="font-bold">{formatGBP(product.price)}</p>
       </Link>
       <div className="mt-4 flex gap-2">
-        <Button className="flex-1" onClick={() => onAddToBasket(product.id)}>Add to basket</Button>
+        <Button className="flex-1" onClick={() => onAddToBasket(product.id, getVariants(product)[0].id)}>Add to basket</Button>
         <Button variant="secondary" size="icon" onClick={() => onToggleFav(product.id)} aria-label={isFav ? "Remove from favourites" : "Add to favourites"}>
-          <span aria-hidden="true" className={isFav ? "text-danger" : "text-text-muted"}>{isFav ? "♥" : "♡"}</span>
+          <HeartIcon filled={isFav} className={`h-6 w-6 ${isFav ? "text-danger" : "text-text-muted"}`} />
         </Button>
       </div>
     </Card>
