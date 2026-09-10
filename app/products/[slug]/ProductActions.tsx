@@ -5,6 +5,7 @@ import { useShop } from "@/app/ShopProvider";
 
 import { getVariants } from "@/lib/basket";
 import { Button } from "@/components/ui/Button";
+import { HeartIcon } from "@/components/ui/HeartIcon";
 
 export default function ProductActions({
   productId,
@@ -67,21 +68,7 @@ export default function ProductActions({
           aria-label={isFav ? "Remove from favourites" : "Add to favourites"}
           className="mb-8 h-14 w-14"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className={`h-6 w-6 ${
-              isFav ? "fill-danger stroke-danger" : "stroke-text-muted"
-            }`}
-            fill={isFav ? "currentColor" : "none"}
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 21s-6.716-4.518-9.428-7.23A5.25 5.25 0 0112 4.5a5.25 5.25 0 019.428 9.27C18.716 16.482 12 21 12 21z"
-            />
-          </svg>
+          <HeartIcon filled={isFav} className={`h-7 w-7 ${isFav ? "text-danger" : "text-text-muted"}`} />
 
           <span className="sr-only">
             {isFav ? "Remove from favourites" : "Add to favourites"}
