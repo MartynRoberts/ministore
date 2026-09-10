@@ -43,9 +43,7 @@ export default function AdminLogin() {
           Enter 8–128 characters. For this demo, use <strong>password</strong>.
         </p>
       </div>
-      <Button type="submit" disabled={pending}>
-        {pending ? "Signing in…" : "Sign in"}
-      </Button>
+      <Button type="submit" loading={pending} loadingLabel="Signing in">Sign in</Button>
       {state.error && <StatusMessage role="alert">{state.error}</StatusMessage>}
     </form>
   );

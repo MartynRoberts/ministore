@@ -31,7 +31,8 @@ server-calculated prices, and shared inventory before creating an order.
 - A protected admin workspace for order lifecycle management and editable stock
   scenarios, including sold-out and low-stock demonstrations.
 - A reusable design system based on semantic CSS theme variables and shared
-  React primitives for buttons, fields, cards, status messages, and layouts.
+  React primitives for buttons, fields, cards, status messages, loading states,
+  and layouts.
 - Automated domain, persistence, API, security, and component tests.
 
 ## Technology
@@ -137,6 +138,9 @@ The main boundaries are:
   order operations.
 - `components/ui` contains the design-system primitives. Theme values are
   defined in `app/globals.css` and exposed as semantic Tailwind utilities.
+- Loading feedback uses the shared spinner throughout: buttons keep their
+  original dimensions while submitting, inline activity reserves its space,
+  and route transitions use a consistent labelled loading state.
 
 ### Project structure
 
@@ -220,11 +224,11 @@ MiniStore has two complementary test layers:
 - **36 Node tests** cover API normalization and failure handling, catalogue
   queries, server actions, basket rules, SQLite persistence, checkout security,
   competing stock reservations, order transitions, and admin authorization.
-- **19 Jest and React Testing Library tests** cover shared UI primitives,
+- **22 Jest and React Testing Library tests** cover shared UI primitives,
   accessible form behaviour, pagination, product-card interactions, and the
   admin password experience.
 
-Run the complete 55-test suite and generate frontend coverage:
+Run the complete 58-test suite and generate frontend coverage:
 
 ```bash
 npm run test:ci

@@ -26,6 +26,16 @@ describe("design-system primitives", () => {
     expect(onClick).not.toHaveBeenCalled();
   });
 
+  test("loading buttons retain their label width and expose progress accessibly", () => {
+    render(<Button loading loadingLabel="Adding item">Add to basket</Button>);
+
+    const button = screen.getByRole("button", { name: "Adding item" });
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute("aria-busy", "true");
+    expect(screen.getByText("Add to basket")).toHaveClass("invisible");
+    expect(button.querySelector("svg")).toBeInTheDocument();
+  });
+
   test("buttonStyles supports links using the same visual contract", () => {
     expect(buttonStyles({ variant: "secondary", size: "sm" })).toEqual(
       expect.stringContaining("bg-surface")

@@ -39,9 +39,7 @@ export default function InventoryControls({
           onChange={(event) => setStock(event.target.value)}
           className="w-24"
         />
-        <Button type="submit" size="sm">
-          {pending ? "Saving…" : "Save"}
-        </Button>
+        <Button type="submit" loading={pending} loadingLabel={`Saving stock for ${title}`} size="sm">Save</Button>
         <Button size="sm" variant="secondary" onClick={() => setStock("0")}>
           Sold out
         </Button>

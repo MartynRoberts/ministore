@@ -1,8 +1,9 @@
 export default function Loading() {
   return (
     <PageContainer>
-      <p>Loading favourites...</p>
+      <PageLoading label="Loading favourites" />
     </PageContainer>
   )
 }
 import { PageContainer } from "@/components/ui/Layout";
+import { PageLoading } from "@/components/ui/LoadingIndicator";

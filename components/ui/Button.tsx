@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes } from "react";
+import { Spinner } from "./LoadingIndicator";
 
 type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 type ButtonSize = "sm" | "md" | "lg" | "icon";
@@ -28,8 +29,22 @@ export function buttonStyles({ variant = "primary", size = "md", className = "" 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  loading?: boolean;
+  loadingLabel?: string;
 };
 
-export function Button({ variant, size, className, type = "button", ...props }: ButtonProps) {
-  return <button type={type} className={buttonStyles({ variant, size, className })} {...props} />;
+export function Button({ variant, size, className, type = "button", loading = false, loadingLabel = "Loading", children, disabled, "aria-label": ariaLabel, ...props }: ButtonProps) {
+  return (
+    <button
+      type={type}
+      className={`${buttonStyles({ variant, size, className })} relative`}
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
+      aria-label={loading ? loadingLabel : ariaLabel}
+      {...props}
+    >
+      <span className={loading ? "invisible" : undefined}>{children}</span>
+      {loading && <Spinner className="absolute h-5 w-5" />}
+    </button>
+  );
 }

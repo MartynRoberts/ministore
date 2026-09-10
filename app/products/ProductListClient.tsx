@@ -10,6 +10,7 @@ import Pagination from "@/components/Pagination";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/FormControls";
 import { PageContainer } from "@/components/ui/Layout";
+import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
 
 type Props = {
   result: CatalogueResult;
@@ -40,7 +41,10 @@ export default function ProductListClient({ result, query }: Props) {
           {result.facets.categories.map(facet => <option key={facet.value} value={facet.value}>{facet.value.replaceAll("-", " ")} ({facet.count})</option>)}
         </Select>
 
-        <p className="m-0 opacity-80">{resultsCount} results</p>
+        <div className="flex items-center gap-2">
+          <p className="m-0 opacity-80">{resultsCount} results</p>
+          <LoadingIndicator active={pending} label="Updating products" />
+        </div>
 
         <label>
           Show favourites only{" "}
@@ -63,8 +67,6 @@ export default function ProductListClient({ result, query }: Props) {
           onChange={(value: string) => updateParam("sort", value)}
         />
       </fieldset>
-      {pending && <p role="status">Updating products…</p>}
-
       {pagedResults.length === 0 &&
         (favsOnly ? (
           <p>

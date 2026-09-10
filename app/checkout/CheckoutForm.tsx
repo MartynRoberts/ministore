@@ -24,7 +24,7 @@ export default function CheckoutForm({ checkoutId }: { checkoutId: string }) {
         <option value="decline">Payment declined</option>
         <option value="pending">Leave payment pending</option>
       </Select></label>
-      <Button type="submit" size="lg">{pending ? "Placing order…" : "Place demo order"}</Button>
+      <Button type="submit" loading={pending} loadingLabel="Placing order" size="lg">Place demo order</Button>
     </fieldset>
     {state.error && <StatusMessage role="alert">{state.error}</StatusMessage>}
   </form>;
