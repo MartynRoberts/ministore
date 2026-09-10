@@ -12,6 +12,7 @@ import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
 import CheckoutButton from "./CheckoutButton";
 import ProductCard from "@/components/ProductCard";
 import type { Product } from "@/types";
+import Image from "next/image";
 
 export default function BasketClient({ recommendations }: { recommendations: Product[] }) {
   const { basket, favs, setQty, setDelivery, addToBasket, toggleFav, pending } = useShop();
@@ -39,7 +40,7 @@ export default function BasketClient({ recommendations }: { recommendations: Pro
           <Link href="/products" className="shrink-0 font-semibold underline hover:no-underline">View all</Link>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {recommendations.map(product => <ProductCard key={product.id} product={product} isFav={favs.includes(product.id)} onToggleFav={toggleFav} onAddToBasket={addToBasket} />)}
+          {recommendations.map((product, index) => <ProductCard key={product.id} product={product} preloadImage={index === 0} isFav={favs.includes(product.id)} onToggleFav={toggleFav} onAddToBasket={addToBasket} />)}
         </div>
       </section>}
     </> : <>
@@ -48,7 +49,7 @@ export default function BasketClient({ recommendations }: { recommendations: Pro
       <fieldset disabled={pending} className="grid gap-3 lg:col-span-2">
         {basket.lines.map(line => <Card key={line.variantId} className="grid grid-cols-[60px_minmax(0,1fr)] gap-x-4 gap-y-3 p-3 lg:grid-cols-12 lg:items-center lg:gap-x-3">
           <div className="row-start-1 flex h-[60px] w-[60px] items-center justify-center self-start lg:col-span-1 lg:col-start-1 lg:self-center lg:justify-self-center">
-            {line.image && <img src={line.image} alt="" className="max-h-full max-w-full object-contain" />}
+            {line.image && <Image src={line.image} alt="" width={60} height={60} className="max-h-full max-w-full object-contain" />}
           </div>
           <div className="col-start-2 row-start-1 min-w-0 lg:col-span-4 lg:col-start-2">
             <Link href={`/products/${line.productId}`} className="font-bold">{line.title}</Link>

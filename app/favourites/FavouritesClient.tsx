@@ -52,7 +52,7 @@ export default function FavouritesClient({ products }: Props) {
           </section>
           {recommendations.length > 0 && <section className="mt-12" aria-labelledby="favourite-recommendations-heading">
             <div className="mb-5 flex items-end justify-between gap-4"><div><h2 id="favourite-recommendations-heading" className="text-2xl font-bold">Popular right now</h2><p className="mt-1 text-text-muted">Tap a heart to start your list</p></div><Link href="/products" className="shrink-0 font-semibold underline hover:no-underline">View all</Link></div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">{recommendations.map(product => <ProductCard key={product.id} product={product} isFav={false} onToggleFav={toggleFav} onAddToBasket={addToBasket} />)}</div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">{recommendations.map((product, index) => <ProductCard key={product.id} product={product} preloadImage={index === 0} isFav={false} onToggleFav={toggleFav} onAddToBasket={addToBasket} />)}</div>
           </section>}
         </>
       ) : (
@@ -63,7 +63,7 @@ export default function FavouritesClient({ products }: Props) {
             </label>
             <p className="text-sm text-text-muted" role="status">{filtered.length} of {favouriteProducts.length} {favouriteProducts.length === 1 ? "favourite" : "favourites"}</p>
           </div>
-          {filtered.length > 0 ? <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">{filtered.map(product => <ProductCard key={product.id} product={product} isFav onToggleFav={toggleFav} onAddToBasket={addToBasket} />)}</div>
+          {filtered.length > 0 ? <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">{filtered.map((product, index) => <ProductCard key={product.id} product={product} preloadImage={index === 0} isFav onToggleFav={toggleFav} onAddToBasket={addToBasket} />)}</div>
             : <section className="rounded-lg border border-border bg-surface p-6 text-center sm:p-10"><h2 className="text-xl font-bold">No matching favourites</h2><p className="mt-2 text-text-muted">Try a different product name.</p><Button variant="secondary" className="mt-5" onClick={() => setSearch("")}>Clear search</Button></section>}
         </>
       )}

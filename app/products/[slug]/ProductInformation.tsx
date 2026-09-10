@@ -26,6 +26,7 @@ function Stars({ rating, label = true }: { rating: number; label?: boolean }) {
   return (
     <span
       className="inline-flex items-center gap-1"
+      role={label ? "img" : undefined}
       aria-label={label ? `${rating.toFixed(1)} out of 5 stars` : undefined}
       aria-hidden={label ? undefined : true}
     >

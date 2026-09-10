@@ -5,7 +5,7 @@ import { ChevronIcon } from "@/components/ui/ChevronIcon";
 export default function NotFound() {
   return (
     <PageContainer>
-      <h2>Product not found</h2>
+      <h1>Product not found</h1>
       <Link className="mt-3 inline-flex items-center gap-2" href="/products">
         <ChevronIcon className="h-4 w-4" />
         Back to products

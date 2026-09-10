@@ -1,9 +1,5 @@
+import CollectionPageSkeleton from "@/components/CollectionPageSkeleton";
+
 export default function Loading() {
-  return (
-    <PageContainer>
-      <PageLoading label="Loading basket" />
-    </PageContainer>
-  )
+  return <CollectionPageSkeleton label="Loading basket" />;
 }
-import { PageContainer } from "@/components/ui/Layout";
-import { PageLoading } from "@/components/ui/LoadingIndicator";

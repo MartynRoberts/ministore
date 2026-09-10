@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const spots = [
   {
@@ -31,9 +32,9 @@ function ContentSpot({ spot }: { spot: (typeof spots)[number] }) {
   return (
     <Link
       href={`/products?category=${encodeURIComponent(spot.category)}`}
-      className={`group relative flex overflow-hidden rounded-lg bg-cover bg-center text-on-primary no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus ${spot.size === "tall" ? "min-h-[32rem]" : "min-h-80"}`}
-      style={{ backgroundImage: `url('${spot.image}')` }}
+      className={`group relative flex overflow-hidden rounded-lg text-on-primary no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus ${spot.size === "tall" ? "min-h-[32rem]" : "min-h-80"}`}
     >
+      <Image src={spot.image} alt="" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
       <span className="absolute inset-0 bg-overlay transition group-hover:opacity-90" />
       <span className="relative m-auto flex flex-col items-center px-6 py-10 text-center">
         <span className="text-3xl sm:text-4xl">{spot.title}</span>

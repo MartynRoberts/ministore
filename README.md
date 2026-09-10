@@ -211,6 +211,8 @@ Create `.env.local`:
 MINISTORE_ADMIN_PASSWORD=password
 # Optional; defaults to .data/ministore.sqlite
 MINISTORE_DB_PATH=.data/ministore.sqlite
+# Optional locally; set to the public origin for canonical and sitemap URLs
+NEXT_PUBLIC_SITE_URL=https://example.com
 ```
 
 Start the development server:
@@ -282,7 +284,9 @@ the project to Vercel. The workflow requires these GitHub repository secrets:
 - `VERCEL_ORG_ID`
 - `VERCEL_PROJECT_ID`
 
-The production environment must also define `MINISTORE_ADMIN_PASSWORD`. The
+The production environment must also define `MINISTORE_ADMIN_PASSWORD` and
+should define `NEXT_PUBLIC_SITE_URL` as its public origin. Vercel deployment
+URLs are detected automatically when the latter is omitted. The
 default SQLite store is appropriate for this single-instance demonstration. A
 multi-instance or serverless production commerce system would use a shared
 managed database, durable job processing, account-based identity, a real payment

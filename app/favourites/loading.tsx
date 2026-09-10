@@ -1,9 +1,5 @@
+import CollectionPageSkeleton from "@/components/CollectionPageSkeleton";
+
 export default function Loading() {
-  return (
-    <PageContainer>
-      <PageLoading label="Loading favourites" />
-    </PageContainer>
-  )
+  return <CollectionPageSkeleton label="Loading favourites" />;
 }
-import { PageContainer } from "@/components/ui/Layout";
-import { PageLoading } from "@/components/ui/LoadingIndicator";
