@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { Product } from "@/types";
+import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
 
 type Suggestion = Pick<Product, "id" | "title" | "image" | "category">;
 
@@ -68,9 +69,10 @@ export default function HeaderSearch() {
       </form>
       {isOpen && eligible && (
         <div id="product-suggestions" className="absolute left-0 right-0 top-full z-50 mt-2 rounded-lg border border-border bg-surface p-3 shadow-card">
-          <p role="status" className="text-sm text-text-muted">
-            {loading ? "Searching…" : current?.error ?? (current?.items.length ? "Suggested products" : `No suggestions for “${trimmed}”`)}
-          </p>
+          <div className="flex min-h-5 items-center gap-2 text-sm text-text-muted">
+            <LoadingIndicator active={loading} label="Searching products" />
+            {!loading && <p role="status">{current?.error ?? (current?.items.length ? "Suggested products" : `No suggestions for “${trimmed}”`)}</p>}
+          </div>
           {!loading && current && !current.error && (
             <ul className="grid gap-2">
               {current.items.map(product => (

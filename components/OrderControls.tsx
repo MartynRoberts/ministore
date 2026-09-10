@@ -13,7 +13,7 @@ export default function OrderControls({ id, status, admin = false }: { id: strin
     <input type="hidden" name="id" value={id} /><input type="hidden" name="expected" value={status} />
     <fieldset disabled={pending} className="flex flex-wrap gap-3">
       {admin && <Select name="status" aria-label="Next order status" className="w-auto">{options.map(next => <option key={next} value={next}>{next}</option>)}</Select>}
-      <Button type="submit" variant={admin ? "primary" : "secondary"}>{pending ? "Updating…" : admin ? "Update order" : "Cancel order"}</Button>
+      <Button type="submit" loading={pending} loadingLabel="Updating order" variant={admin ? "primary" : "secondary"}>{admin ? "Update order" : "Cancel order"}</Button>
     </fieldset>
     {state.error && <StatusMessage role="alert">{state.error}</StatusMessage>}
     {state.success && <StatusMessage role="status" tone="success">{state.success}</StatusMessage>}
