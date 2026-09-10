@@ -5,10 +5,10 @@ type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 type ButtonSize = "sm" | "md" | "lg" | "icon";
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: "bg-primary text-on-primary border-primary hover:bg-primary-hover",
-  secondary: "bg-surface text-text border-border hover:bg-surface-muted",
-  ghost: "border-transparent bg-transparent text-text hover:bg-surface-muted",
-  danger: "bg-danger text-on-primary border-danger hover:opacity-90",
+  primary: "border border-primary bg-primary text-on-primary no-underline shadow-button hover:bg-primary-hover hover:shadow-button-hover",
+  secondary: "border-2 border-primary bg-surface text-text no-underline shadow-button hover:bg-primary hover:text-on-primary hover:shadow-button-hover",
+  ghost: "border border-transparent bg-transparent text-text underline underline-offset-4 hover:bg-surface-muted",
+  danger: "border border-danger bg-danger text-on-primary no-underline shadow-button hover:opacity-90 hover:shadow-button-hover",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -23,7 +23,7 @@ export function buttonStyles({ variant = "primary", size = "md", className = "" 
   size?: ButtonSize;
   className?: string;
 } = {}) {
-  return `inline-flex items-center justify-center rounded-md border font-semibold no-underline transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:opacity-50 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
+  return `inline-flex cursor-pointer items-center justify-center rounded-md font-semibold transition-[color,background-color,border-color,box-shadow,transform] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none disabled:active:translate-y-0 ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
 }
 
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {

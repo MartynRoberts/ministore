@@ -22,6 +22,8 @@
   --theme-radius-md: 0.375rem;
   --theme-radius-lg: 0.5rem;
   --theme-shadow-card: 0 10px 20px rgb(0 0 0 / 10%);
+  --theme-shadow-button: 0 1px 2px rgb(0 0 0 / 8%);
+  --theme-shadow-button-hover: 0 3px 8px rgb(0 0 0 / 12%);
   --theme-content-width: 105rem;
 }
 
@@ -47,6 +49,8 @@
   --radius-md: var(--theme-radius-md);
   --radius-lg: var(--theme-radius-lg);
   --shadow-card: var(--theme-shadow-card);
+  --shadow-button: var(--theme-shadow-button);
+  --shadow-button-hover: var(--theme-shadow-button-hover);
   --spacing-content: var(--theme-content-width);
 }
 
