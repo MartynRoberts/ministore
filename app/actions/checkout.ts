@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 import { getCurrentSessionId } from "./shop";
 import { getShopStore } from "@/lib/shop-store";
 import { getCheckoutProducts } from "@/lib/checkout-api";
-import { createCheckoutDraft, fingerprint, parseCustomer, validateCheckout, type CheckoutState } from "@/lib/checkout";
+import { CheckoutValidationError, createCheckoutDraft, fingerprint, parseCustomer, validateCheckout, type CheckoutState } from "@/lib/checkout";
 
 export async function placeOrder(_previous: CheckoutState, form: FormData): Promise<CheckoutState> {
   const sessionId = await getCurrentSessionId();
@@ -18,9 +18,10 @@ export async function placeOrder(_previous: CheckoutState, form: FormData): Prom
   const existing = store.orderForCheckout(sessionId, checkoutId);
   if (existing) redirect(`/orders/${existing.id}`);
   const draft = store.getCheckout(sessionId, checkoutId);
-  if (!draft || draft.expiresAt < Date.now()) return { error: "This checkout has expired. Please reload to review your basket." };
+  if (!draft || draft.expiresAt < Date.now()) return { error: "This checkout has expired. Return to your basket to reserve the items again." };
   let customer;
   try { customer = parseCustomer(form); } catch (error) {
+    if (error instanceof CheckoutValidationError) return { error: error.message, fieldErrors: error.fieldErrors };
     return { error: error instanceof Error ? error.message : "Check your delivery details." };
   }
   const payment = form.get("payment");
@@ -36,7 +37,7 @@ export async function placeOrder(_previous: CheckoutState, form: FormData): Prom
       if (draft.expiresAt < Date.now()) throw new Error("This checkout has expired. Please reload this page.");
       const quote = validateCheckout(shop, products);
       if (fingerprint(quote) !== draft.fingerprint) throw new Error("Your basket or its prices have changed. Reload checkout to review the updated total.");
-      if (payment === "decline") throw new Error("Simulated payment declined. Your basket is unchanged. Please start checkout again to reserve stock.");
+      if (payment === "decline") throw new Error("Simulated payment declined. Your basket is unchanged. Return to your basket to try again.");
       return { id: randomUUID(), createdAt: new Date().toISOString(), customer, quote, paymentStatus: payment === "pending" ? "simulated-pending" as const : "simulated-paid" as const };
     });
   } catch (error) {

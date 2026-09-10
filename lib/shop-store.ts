@@ -56,7 +56,7 @@ export function openShopStore(filename: string, now = Date.now) {
     FROM inventory i LEFT JOIN reservations r ON r.product_id=i.product_id GROUP BY i.product_id ORDER BY i.title`).all(now()).map(row => ({ productId: Number(row.product_id), title: String(row.title), stock: Number(row.stock), reserved: Number(row.reserved), available: Number(row.stock) - Number(row.reserved) }));
   const consume = (checkoutId: string) => {
     const rows = db.prepare("SELECT * FROM reservations WHERE checkout_id=? AND status='held' AND expires_at > ?").all(checkoutId, now());
-    if (!rows.length) throw new Error("Stock reservation expired. Please start checkout again.");
+    if (!rows.length) throw new Error("Stock reservation expired. Return to your basket to reserve the items again.");
     for (const row of rows) {
       const changed = db.prepare("UPDATE inventory SET stock=stock-? WHERE product_id=? AND stock>=?").run(row.quantity, row.product_id, row.quantity);
       if (!changed.changes) throw new Error("Insufficient local stock.");
@@ -145,7 +145,7 @@ export function openShopStore(filename: string, now = Date.now) {
         const held = db.prepare("SELECT * FROM reservations WHERE checkout_id=? AND session_id=? AND status='held' AND expires_at>?").all(checkoutId, sessionId, now());
         const quantities = new Map<number, number>();
         for (const line of order.quote.lines) quantities.set(line.productId, (quantities.get(line.productId) ?? 0) + line.quantity);
-        if (held.length !== quantities.size || held.some(row => quantities.get(Number(row.product_id)) !== Number(row.quantity))) throw new Error("Reservation expired or released. Please start checkout again.");
+        if (held.length !== quantities.size || held.some(row => quantities.get(Number(row.product_id)) !== Number(row.quantity))) throw new Error("Reservation expired or released. Return to your basket to reserve the items again.");
         order.status = order.paymentStatus === "simulated-pending" ? "pending" : "paid";
         order.events = [{ status: "pending", at: order.createdAt, note: "Demo order submitted" }];
         order.inventoryCommitted = order.status === "paid";

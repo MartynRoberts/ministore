@@ -7,7 +7,15 @@ export type CheckoutProduct = Product & { stock: number };
 export type Customer = { name: string; email: string; address: string; city: string; postcode: string };
 export type CheckoutDraft = { id: string; fingerprint: string; quote: BasketQuote; expiresAt: number };
 export type Order = { id: string; createdAt: string; customer: Customer; quote: BasketQuote; paymentStatus: "simulated-paid" | "simulated-pending" | "simulated-refunded" | "simulated-cancelled"; status?: OrderStatus; events?: OrderEvent[]; inventoryCommitted?: boolean };
-export type CheckoutState = { error?: string };
+export type CustomerField = keyof Customer;
+export type CheckoutState = { error?: string; fieldErrors?: Partial<Record<CustomerField, string>> };
+
+export class CheckoutValidationError extends Error {
+  constructor(public fieldErrors: Partial<Record<CustomerField, string>>) {
+    super(Object.values(fieldErrors)[0] ?? "Check the highlighted delivery details.");
+    this.name = "CheckoutValidationError";
+  }
+}
 
 export function fingerprint(quote: BasketQuote) {
   return createHash("sha256").update(JSON.stringify({
@@ -34,14 +42,25 @@ export function validateCheckout(shop: StoredShop, products: CheckoutProduct[]):
   return quote;
 }
 export function parseCustomer(form: FormData): Customer {
-  const field = (name: string, max: number) => {
+  const errors: Partial<Record<CustomerField, string>> = {};
+  const field = (name: CustomerField, min: number, max: number, label: string) => {
     const value = form.get(name);
-    if (typeof value !== "string" || !value.trim() || value.length > max) throw new Error("Please complete all delivery details correctly.");
-    return value.trim();
+    const trimmed = typeof value === "string" ? value.trim() : "";
+    if (!trimmed) errors[name] = `Enter your ${label.toLowerCase()}.`;
+    else if (trimmed.length < min) errors[name] = `${label} must be at least ${min} characters.`;
+    else if (trimmed.length > max) errors[name] = `${label} must be ${max} characters or fewer.`;
+    return trimmed;
   };
-  const customer = { name: field("name", 100), email: field("email", 254), address: field("address", 200), city: field("city", 100), postcode: field("postcode", 12).toUpperCase() };
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email)) throw new Error("Enter a valid email address.");
-  if (!/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/.test(customer.postcode)) throw new Error("Enter a valid UK postcode.");
+  const customer = {
+    name: field("name", 2, 100, "Full name"),
+    email: field("email", 3, 254, "Email address"),
+    address: field("address", 5, 200, "Address"),
+    city: field("city", 2, 100, "Town or city"),
+    postcode: field("postcode", 5, 12, "Postcode").toUpperCase(),
+  };
+  if (customer.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email)) errors.email = "Enter a valid email address.";
+  if (customer.postcode && !/^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/.test(customer.postcode)) errors.postcode = "Enter a valid UK postcode.";
+  if (Object.keys(errors).length) throw new CheckoutValidationError(errors);
   return customer;
 }
 
