@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import type { Product } from "@/types";
 import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
 import Image from "next/image";
+import { trackEvent } from "@/lib/analytics";
 
 type Suggestion = Pick<Product, "id" | "title" | "image" | "category">;
 
@@ -52,6 +53,7 @@ export default function HeaderSearch() {
       <form role="search" onSubmit={(event) => {
         event.preventDefault();
         setIsOpen(false);
+        trackEvent("product_search");
         router.push(resultsHref);
       }}>
         <input

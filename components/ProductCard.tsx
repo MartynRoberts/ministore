@@ -31,6 +31,9 @@ export default function ProductCard({
     <Card className="flex h-full flex-col p-3 transition hover:border-focus hover:shadow-card focus-within:border-focus focus-within:shadow-card">
       <Link
         href={`/products/${product.id}`}
+        data-umami-event="product_select"
+        data-umami-event-product-id={product.id}
+        data-umami-event-category={product.category}
         className="block text-inherit no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
       >
         <Image

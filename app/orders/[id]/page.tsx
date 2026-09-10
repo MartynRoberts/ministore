@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { getCurrentSessionId } from "@/app/actions/shop";
 import { getShopStore } from "@/lib/shop-store";
 import OrderSummary from "@/components/OrderSummary";
+import OrderAnalytics from "@/components/OrderAnalytics";
 
 const statusNames = {
   pending: "Payment pending",
@@ -51,6 +52,14 @@ export default async function OrderPage({
 
   return (
     <PageContainer>
+      <OrderAnalytics
+        orderId={order.id}
+        total={order.quote.total / 100}
+        currency={order.quote.currency}
+        itemCount={order.quote.lines.reduce((sum, line) => sum + line.quantity, 0)}
+        deliveryMethod={order.quote.deliveryMethod}
+        paymentStatus={order.paymentStatus}
+      />
       <section
         className={`mb-8 rounded-lg border p-5 sm:p-6 ${isCancelled ? "border-danger bg-surface" : isPending ? "border-warning bg-surface-muted" : "border-success bg-surface"}`}
       >

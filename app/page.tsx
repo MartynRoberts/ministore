@@ -77,6 +77,7 @@ export default async function HomePage() {
           </p>
           <Link
             href="/products"
+            data-umami-event="hero_shop_select"
             className={buttonStyles({ size: "lg", className: "mt-6" })}
           >
             Browse all products
