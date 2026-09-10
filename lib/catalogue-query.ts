@@ -38,7 +38,7 @@ export function queryCatalogue(products: Product[], query: CatalogueQuery, favou
   const terms = query.search.toLowerCase().split(/\s+/).filter(Boolean);
   const favs = new Set(favourites);
   const matching = products.filter(product => {
-    const text = `${product.title} ${product.description} ${product.category}`.toLowerCase();
+    const text = `${product.title} ${product.description} ${product.category} ${product.brand ?? ""} ${(product.tags ?? []).join(" ")}`.toLowerCase();
     return terms.every(term => text.includes(term)) && (!query.favsOnly || favs.has(product.id));
   });
   const counts = new Map<string, number>();
