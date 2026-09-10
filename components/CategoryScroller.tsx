@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { ChevronIcon } from "@/components/ui/ChevronIcon";
+import Image from "next/image";
 
 export type CategoryPreview = { slug: string; title: string; image: string };
 
@@ -35,7 +36,7 @@ export default function CategoryScroller({ categories }: { categories: CategoryP
     </div>
     <div ref={scroller} onScroll={updateControls} className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3" tabIndex={0} aria-label="Popular categories">
       {categories.map(category => <Link key={category.slug} href={`/products?category=${encodeURIComponent(category.slug)}`} className="group block basis-[82%] shrink-0 snap-start overflow-hidden rounded-lg border border-border bg-surface text-inherit no-underline transition hover:border-focus hover:shadow-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus sm:basis-[calc((100%-1rem)/2)] lg:basis-[calc((100%-3rem)/4)]">
-        <div className="aspect-[4/3] bg-surface-muted p-5"><img src={category.image} alt="" className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105" /></div>
+        <div className="relative aspect-[4/3] bg-surface-muted"><Image src={category.image} alt="" fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 82vw" className="object-contain p-5 transition-transform duration-300 group-hover:scale-105" /></div>
         <div className="p-4"><h3 className="text-lg font-semibold">{category.title}</h3><p className="mt-1 text-sm text-text-muted group-hover:underline">Shop category</p></div>
       </Link>)}
     </div>

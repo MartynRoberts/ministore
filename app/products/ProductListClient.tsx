@@ -34,6 +34,12 @@ export default function ProductListClient({ result, query }: Props) {
 
   return (
     <PageContainer>
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">
+          {category ? `${category.replaceAll("-", " ").replace(/\b\w/g, letter => letter.toUpperCase())} products` : search ? `Search results for “${search}”` : "Shop all products"}
+        </h1>
+        <p className="mt-2 text-text-muted">Browse and compare products, prices and availability.</p>
+      </div>
       <fieldset disabled={pending} className="flex flex-wrap items-center gap-3 mb-3">
         <Select aria-label="Category" value={category} onChange={(event) => updateParam("category", event.target.value)} className="w-auto">
           <option value="">All categories</option>
@@ -87,10 +93,12 @@ export default function ProductListClient({ result, query }: Props) {
 
       {pagedResults.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {pagedResults.map((p) => (
+          {pagedResults.map((p, index) => (
             <ProductCard
               key={p.id}
               product={p}
+              preloadImage={index === 0}
+              headingLevel={2}
               isFav={favs.includes(p.id)}
               onToggleFav={toggleFav}
               onAddToBasket={addToBasket}

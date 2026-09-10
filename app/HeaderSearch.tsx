@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { Product } from "@/types";
 import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
+import Image from "next/image";
 
 type Suggestion = Pick<Product, "id" | "title" | "image" | "category">;
 
@@ -78,7 +79,7 @@ export default function HeaderSearch() {
               {current.items.map(product => (
                 <li key={product.id}>
                   <Link href={`/products/${product.id}`} onClick={() => setIsOpen(false)} className="flex items-center gap-3 rounded-md p-2 hover:bg-surface-muted">
-                    <img src={product.image} alt="" className="h-12 w-12 object-contain" />
+                    <Image src={product.image} alt="" width={48} height={48} className="h-12 w-12 object-contain" />
                     <div className="min-w-0">
                       <p className="truncate font-medium">{product.title}</p>
                       <p className="text-sm text-text-muted">{product.category.replaceAll("-", " ")}</p>

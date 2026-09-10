@@ -5,10 +5,13 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Layout";
 import { HeartIcon } from "@/components/ui/HeartIcon";
 import { getVariants } from "@/lib/basket";
+import Image from "next/image";
 
 type Props = {
   product: Product;
   isFav: boolean;
+  preloadImage?: boolean;
+  headingLevel?: 2 | 3;
   onToggleFav: (id: number) => void;
   onAddToBasket: (id: number, variantId?: string) => void;
 };
@@ -16,13 +19,13 @@ type Props = {
 export default function ProductCard({
   product,
   isFav,
+  preloadImage = false,
+  headingLevel = 3,
   onToggleFav,
   onAddToBasket,
 }: Props) {
   const detailImage = product.images?.[0];
-  const responsiveImages = detailImage && detailImage !== product.image
-    ? `${product.image} 300w, ${detailImage} 1000w`
-    : undefined;
+  const displayImage = detailImage ?? product.image;
 
   return (
     <Card className="flex h-full flex-col p-3 transition hover:border-focus hover:shadow-card focus-within:border-focus focus-within:shadow-card">
@@ -30,17 +33,22 @@ export default function ProductCard({
         href={`/products/${product.id}`}
         className="block text-inherit no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
       >
-        <img
-          src={product.image}
-          srcSet={responsiveImages}
+        <Image
+          src={displayImage}
+          width={600}
+          height={600}
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, calc(100vw - 2rem)"
           alt={product.title}
-          loading="lazy"
-          decoding="async"
+          preload={preloadImage}
+          fetchPriority={preloadImage ? "high" : "auto"}
           className="aspect-square w-full object-contain"
         />
 
-        <h3 className="my-2 min-h-[48px]">{product.title}</h3>
+        {headingLevel === 2 ? (
+          <h2 className="my-2 min-h-[48px]">{product.title}</h2>
+        ) : (
+          <h3 className="my-2 min-h-[48px]">{product.title}</h3>
+        )}
 
         <p className="font-bold">{formatGBP(product.price)}</p>
       </Link>

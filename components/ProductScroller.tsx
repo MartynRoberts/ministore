@@ -6,6 +6,7 @@ import { formatGBP } from "@/utils/money";
 import type { Product } from "@/types";
 import { Button } from "@/components/ui/Button";
 import { ChevronIcon } from "@/components/ui/ChevronIcon";
+import Image from "next/image";
 
 type Props = {
   title: string;
@@ -98,8 +99,11 @@ export default function ProductScroller({
             draggable={false}
           >
             <div className="aspect-square bg-surface-muted p-4">
-              <img
-                src={product.image}
+              <Image
+                src={product.images?.[0] ?? product.image}
+                width={440}
+                height={440}
+                sizes="220px"
                 alt={product.title}
                 draggable={false}
                 className="h-full w-full select-none object-contain"
