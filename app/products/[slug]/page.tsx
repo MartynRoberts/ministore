@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { api } from "@/lib/api";
 import ProductDetailView from "./ProductDetailView";
+import { rankRecommendations } from "@/lib/recommendations";
 
 export default async function ProductDetailPage({
   params,
@@ -18,14 +19,7 @@ export default async function ProductDetailPage({
 
   const allProducts = await api.getProducts();
 
-  const recommendations = allProducts
-    .filter((p) => p.id !== product.id)
-    .sort((a, b) => {
-      const aSameCategory = a.category === product.category ? 1 : 0;
-      const bSameCategory = b.category === product.category ? 1 : 0;
-      return bSameCategory - aSameCategory;
-    })
-    .slice(0, 6);
+  const recommendations = rankRecommendations(product, allProducts);
 
   return (
     <ProductDetailView

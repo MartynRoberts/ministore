@@ -20,6 +20,10 @@ server-calculated prices, and shared inventory before creating an order.
   sorting, pagination, bookmarkable URLs, and cancellation of stale requests.
 - A provider adapter that validates and normalizes DummyJSON payloads before
   they reach the UI.
+- Rich product pages with image galleries, ratings and reviews, availability,
+  delivery, returns, warranty, dimensions, and product identifiers.
+- Tag- and brand-aware catalogue search, with related products ranked by shared
+  tags, category, brand, availability, and rating.
 - Server-authoritative basket pricing, delivery calculations, product variants,
   inventory checks, and quantity limits.
 - Transactional stock reservations with expiry, protection against overselling,
@@ -222,14 +226,14 @@ database file are created lazily on the first state-changing request.
 
 MiniStore has two complementary test layers:
 
-- **36 Node tests** cover API normalization and failure handling, catalogue
+- **39 Node tests** cover API normalization and failure handling, catalogue
   queries, server actions, basket rules, SQLite persistence, checkout security,
   competing stock reservations, order transitions, and admin authorization.
 - **22 Jest and React Testing Library tests** cover shared UI primitives,
   accessible form behaviour, pagination, product-card interactions, and the
   admin password experience.
 
-Run the complete 58-test suite and generate frontend coverage:
+Run the complete 61-test suite and generate frontend coverage:
 
 ```bash
 npm run test:ci

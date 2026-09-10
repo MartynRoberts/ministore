@@ -10,9 +10,11 @@ import { HeartIcon } from "@/components/ui/HeartIcon";
 export default function ProductActions({
   productId,
   category,
+  available = true,
 }: {
   productId: number;
   category: string;
+  available?: boolean;
 }) {
   const { addToBasket, toggleFav, favs, pending } = useShop();
   const isFav = favs.includes(productId);
@@ -54,10 +56,10 @@ export default function ProductActions({
         <Button
           size="lg"
           onClick={() => addToBasket(productId, selectedSize ?? variants[0].id)}
-          disabled={pending || (isClothing && !selectedSize)}
+          disabled={pending || !available || (isClothing && !selectedSize)}
           className="mb-8 flex-1"
         >
-          Add to basket
+          {available ? "Add to basket" : "Out of stock"}
         </Button>
 
         <Button

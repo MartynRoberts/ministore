@@ -1,119 +1,30 @@
-import Link from "next/link";
-import ProductActions from "./ProductActions";
-import ProductScroller from "@/components/ProductScroller";
 import Skeleton from "@/components/Skeleton";
-import { formatGBP } from "@/utils/money";
 import type { Product } from "@/types";
 import { PageContainer } from "@/components/ui/Layout";
+import ProductInformation from "./ProductInformation";
 
-type Props = {
-  product?: Product;
-  recommendations?: Product[];
-  loading?: boolean;
-};
+type Props = { product?: Product; recommendations?: Product[]; loading?: boolean };
 
-export default function ProductDetailView({
-  product,
-  recommendations = [],
-  loading = false,
-}: Props) {
-  const categoryTitle =
-    product?.category.replaceAll("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()) ?? "";
+export default function ProductDetailView({ product, recommendations = [], loading = false }: Props) {
+  if (!loading && product) return <ProductInformation product={product} recommendations={recommendations} />;
 
-  return (
-    <PageContainer>
-      <div className="mb-6">
-        {loading ? (
-          <Skeleton className="h-4 w-[220px]" />
-        ) : (
-          <>
-            <Link href="/Home">Home</Link>
-            <span className="mx-1">/</span>
-            <span>{product?.title}</span>
-          </>
-        )}
+  return <PageContainer>
+    <Skeleton className="mb-8 h-4 w-[220px] max-w-full" />
+    <div className="grid items-start gap-8 lg:grid-cols-5 lg:gap-12">
+      <Skeleton className="aspect-square w-full lg:col-span-3" />
+      <div className="lg:col-span-2">
+        <Skeleton className="mb-3 h-4 w-24" />
+        <Skeleton className="mb-4 h-9 w-full" />
+        <Skeleton className="mb-6 h-5 w-52" />
+        <Skeleton className="mb-6 h-8 w-32" />
+        <Skeleton className="mb-3 h-5 w-full" />
+        <Skeleton className="mb-8 h-5 w-4/5" />
+        <Skeleton className="mb-4 h-14 w-full" />
       </div>
-
-      <div className="mt-16 flex flex-col justify-between gap-10 lg:flex-row">
-        <div className="aspect-square w-full max-w-full lg:max-w-[800px]">
-          {loading ? (
-            <Skeleton className="h-full w-full" />
-          ) : (
-            <img
-              src={product?.image}
-              alt={product?.title}
-              className="h-full w-full object-contain"
-              draggable={false}
-            />
-          )}
-        </div>
-
-        <div className="lg:max-w-[700px] w-full">
-          {loading ? (
-            <>
-              <Skeleton className="mb-3 h-7 w-[320px]" />
-              <Skeleton className="mb-8 h-7 w-[120px]" />
-              <Skeleton className="mb-8 h-14 w-full rounded-md" />
-              <Skeleton className="mb-3 h-5 w-full max-w-[700px]" />
-              <Skeleton className="mb-3 h-5 w-full max-w-[620px]" />
-              <Skeleton className="mb-3 h-5 w-[220px]" />
-            </>
-          ) : (
-            <>
-              <h1 className="mb-3 text-xl font-bold">{product?.title}</h1>
-              <p className="mb-8 text-lg font-bold">
-                {formatGBP(product!.price)}
-              </p>
-
-              <ProductActions key={product!.id}
-                productId={product!.id}
-                category={product!.category}
-              />
-
-              <p className="mb-3 max-w-[700px]">{product?.description}</p>
-
-              <p className="mb-3">
-                Category:{" "}
-                <Link
-                  href={`/products?category=${encodeURIComponent(
-                    product!.category
-                  )}`}
-                  className="text-text-muted underline hover:text-text"
-                >
-                  {categoryTitle}
-                </Link>
-              </p>
-            </>
-          )}
-        </div>
-      </div>
-
-      {loading ? (
-        <section className="mt-16">
-          <Skeleton className="mb-4 h-8 w-[220px]" />
-          <div className="flex gap-4 overflow-hidden">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div
-                key={i}
-                className="w-[220px] shrink-0 overflow-hidden rounded-lg border border-border bg-surface"
-              >
-                <Skeleton className="aspect-square w-full" />
-                <div className="p-4">
-                  <Skeleton className="mb-2 h-5 w-full" />
-                  <Skeleton className="mb-2 h-5 w-3/4" />
-                  <Skeleton className="mt-4 h-5 w-[80px]" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      ) : (
-        <ProductScroller
-          title="You may also like"
-          products={recommendations}
-          viewAllHref="/products"
-        />
-      )}
-    </PageContainer>
-  );
+    </div>
+    <section className="mt-16">
+      <Skeleton className="mb-4 h-8 w-[220px]" />
+      <div className="flex gap-4 overflow-hidden">{Array.from({ length: 4 }).map((_, index) => <div key={index} className="w-[220px] shrink-0 overflow-hidden rounded-lg border border-border bg-surface"><Skeleton className="aspect-square w-full" /><div className="p-4"><Skeleton className="mb-2 h-5 w-full" /><Skeleton className="mb-2 h-5 w-3/4" /><Skeleton className="mt-4 h-5 w-20" /></div></div>)}</div>
+    </section>
+  </PageContainer>;
 }
