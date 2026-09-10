@@ -19,6 +19,11 @@ export default function ProductCard({
   onToggleFav,
   onAddToBasket,
 }: Props) {
+  const detailImage = product.images?.[0];
+  const responsiveImages = detailImage && detailImage !== product.image
+    ? `${product.image} 300w, ${detailImage} 1000w`
+    : undefined;
+
   return (
     <Card className="flex h-full flex-col p-3 transition hover:border-focus hover:shadow-card focus-within:border-focus focus-within:shadow-card">
       <Link
@@ -27,7 +32,11 @@ export default function ProductCard({
       >
         <img
           src={product.image}
+          srcSet={responsiveImages}
+          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, calc(100vw - 2rem)"
           alt={product.title}
+          loading="lazy"
+          decoding="async"
           className="aspect-square w-full object-contain"
         />
 

@@ -8,6 +8,7 @@ const product = {
   description: "A useful product",
   category: "mens-shirts",
   image: "/product.jpg",
+  images: ["/product-large.jpg"],
   price: 12.99,
 };
 
@@ -16,6 +17,8 @@ describe("ProductCard", () => {
     render(<ProductCard product={product} isFav={false} onToggleFav={jest.fn()} onAddToBasket={jest.fn()} />);
     expect(screen.getByRole("link", { name: /Test product/ })).toHaveAttribute("href", "/products/7");
     expect(screen.getByText("£12.99")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Test product" })).toHaveAttribute("srcset", "/product.jpg 300w, /product-large.jpg 1000w");
+    expect(screen.getByRole("img", { name: "Test product" })).toHaveAttribute("sizes", expect.stringContaining("25vw"));
   });
 
   test("dispatches basket and favourite actions for the displayed product", async () => {
