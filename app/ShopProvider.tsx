@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useRef, useState, useTransition } from "react";
 import * as actions from "@/app/actions/shop";
 import type { DeliveryMethod, ShopSession } from "@/lib/basket";
+import { trackEvent, type AnalyticsData } from "@/lib/analytics";
 
 type ShopContextValue = ShopSession & {
   addToBasket: (id: number, variantId?: string) => void;
@@ -21,7 +22,7 @@ export function ShopProvider({ initialSession, children }: { initialSession: Sho
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const busy = useRef(false);
-  const run = (action: () => Promise<ShopSession>, fallbackMessage: string) => {
+  const run = (action: () => Promise<ShopSession>, fallbackMessage: string, analytics?: { name: string; data?: AnalyticsData }) => {
     if (busy.current) return;
     busy.current = true;
     setError(null);
@@ -29,6 +30,7 @@ export function ShopProvider({ initialSession, children }: { initialSession: Sho
       try {
         const session = await action();
         setState(previous => ({ ...previous, session }));
+        if (analytics) trackEvent(analytics.name, analytics.data);
       } catch (caught) {
         const message = caught instanceof Error && caught.message && !caught.message.includes("Server Components render")
           ? caught.message
@@ -41,11 +43,11 @@ export function ShopProvider({ initialSession, children }: { initialSession: Sho
   };
   const value: ShopContextValue = {
     ...state.session, pending, error,
-    addToBasket: (id, variantId = `dummyjson-${id}-standard`) => run(() => actions.addToBasket(id, variantId), "We could not add this product. Please try again."),
-    toggleFav: id => run(() => actions.toggleFav(id), "We could not update your favourites. Please try again."),
-    setQty: (variantId, quantity) => run(() => actions.setBasketQty(variantId, quantity), "We could not update this quantity. Please try again."),
-    setDelivery: method => run(() => actions.setDelivery(method), "We could not update your delivery method. Please try again."),
-    clearFavourites: () => run(actions.clearFavourites, "We could not clear your favourites. Please try again."),
+    addToBasket: (id, variantId = `dummyjson-${id}-standard`) => run(() => actions.addToBasket(id, variantId), "We could not add this product. Please try again.", { name: "basket_add", data: { product_id: id, variant: variantId } }),
+    toggleFav: id => run(() => actions.toggleFav(id), "We could not update your favourites. Please try again.", { name: state.session.favs.includes(id) ? "favourite_remove" : "favourite_add", data: { product_id: id } }),
+    setQty: (variantId, quantity) => run(() => actions.setBasketQty(variantId, quantity), "We could not update this quantity. Please try again.", { name: quantity === 0 ? "basket_remove" : "basket_quantity", data: { variant: variantId, quantity } }),
+    setDelivery: method => run(() => actions.setDelivery(method), "We could not update your delivery method. Please try again.", { name: "delivery_select", data: { method } }),
+    clearFavourites: () => run(actions.clearFavourites, "We could not clear your favourites. Please try again.", { name: "favourites_clear" }),
   };
   return <ShopContext.Provider value={value}>
     {error && <div role="alert" className="fixed bottom-4 left-1/2 z-[100] flex w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 items-start gap-3 rounded-lg border border-danger bg-surface p-4 text-danger shadow-card">

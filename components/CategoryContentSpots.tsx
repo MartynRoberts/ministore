@@ -32,6 +32,8 @@ function ContentSpot({ spot }: { spot: (typeof spots)[number] }) {
   return (
     <Link
       href={`/products?category=${encodeURIComponent(spot.category)}`}
+      data-umami-event="category_promotion_select"
+      data-umami-event-category={spot.category}
       className={`group relative flex overflow-hidden rounded-lg text-on-primary no-underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus ${spot.size === "tall" ? "min-h-[32rem]" : "min-h-80"}`}
     >
       <Image src={spot.image} alt="" fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover transition-transform duration-300 group-hover:scale-[1.02]" />

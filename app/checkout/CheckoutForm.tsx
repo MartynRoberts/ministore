@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Select, TextInput } from "@/components/ui/FormControls";
 import { StatusMessage } from "@/components/ui/Layout";
 import type { CheckoutState, CustomerField } from "@/lib/checkout";
+import { trackEvent } from "@/lib/analytics";
 
 function DeliveryField({ name, label, type = "text", autoComplete, minLength, maxLength, inputMode, pattern, help, state }: {
   name: CustomerField;
@@ -60,7 +61,10 @@ function PaymentIcons() {
 
 export default function CheckoutForm({ checkoutId, orderSummary }: { checkoutId: string; orderSummary: ReactNode }) {
   const [state, action, pending] = useActionState(placeOrder, {});
-  return <form action={action} className="grid items-start gap-8 lg:grid-cols-5">
+  return <form action={action} onSubmit={(event) => {
+    const payment = new FormData(event.currentTarget).get("payment");
+    trackEvent("order_submit", { payment_outcome: typeof payment === "string" ? payment : "unknown" });
+  }} className="grid items-start gap-8 lg:grid-cols-5">
     <input type="hidden" name="checkoutId" value={checkoutId} />
     <fieldset disabled={pending} className="contents">
       <section className="rounded-lg border border-border bg-surface p-4 sm:p-6 lg:col-span-3 lg:col-start-1 lg:row-start-1">

@@ -10,7 +10,7 @@ export default function CheckoutButton({ disabled = false }: { disabled?: boolea
 
   return (
     <form action={action}>
-      <Button type="submit" loading={pending} loadingLabel="Reserving stock" disabled={disabled} size="lg" className="w-full">
+      <Button type="submit" loading={pending} loadingLabel="Reserving stock" disabled={disabled} size="lg" className="w-full" data-umami-event="checkout_begin">
         Continue to checkout
       </Button>
       {state.error && <StatusMessage role="alert" className="mt-3 text-sm">{state.error}</StatusMessage>}

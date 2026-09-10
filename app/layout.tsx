@@ -9,6 +9,7 @@ import HeaderSearch from "./HeaderSearch";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import ProductNav from "./ProductNav";
 import { getSiteUrl } from "@/lib/site-url";
+import UmamiAnalytics from "@/components/UmamiAnalytics";
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
@@ -53,6 +54,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className="bg-canvas text-text">
+        <UmamiAnalytics />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

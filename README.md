@@ -213,6 +213,10 @@ MINISTORE_ADMIN_PASSWORD=password
 MINISTORE_DB_PATH=.data/ministore.sqlite
 # Optional locally; set to the public origin for canonical and sitemap URLs
 NEXT_PUBLIC_SITE_URL=https://example.com
+# Umami website ID; analytics remains disabled when omitted
+NEXT_PUBLIC_UMAMI_WEBSITE_ID=00000000-0000-0000-0000-000000000000
+# Optional for self-hosted Umami; defaults to Umami Cloud
+NEXT_PUBLIC_UMAMI_SCRIPT_URL=https://cloud.umami.is/script.js
 ```
 
 Start the development server:
