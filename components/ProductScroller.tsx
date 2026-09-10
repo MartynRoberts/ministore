@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { formatGBP } from "@/utils/money";
 import type { Product } from "@/types";
+import { Button } from "@/components/ui/Button";
+import { ChevronIcon } from "@/components/ui/ChevronIcon";
 
 type Props = {
   title: string;
@@ -23,6 +25,21 @@ export default function ProductScroller({
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+  const [canPrevious, setCanPrevious] = useState(false);
+  const [canNext, setCanNext] = useState(products.length > 1);
+  const updateControls = () => {
+    const element = scrollerRef.current;
+    if (!element) return;
+    setCanPrevious(element.scrollLeft > 1);
+    setCanNext(element.scrollLeft + element.clientWidth < element.scrollWidth - 1);
+  };
+  useEffect(() => {
+    updateControls();
+    const observer = new ResizeObserver(updateControls);
+    if (scrollerRef.current) observer.observe(scrollerRef.current);
+    return () => observer.disconnect();
+  }, [products.length]);
+  const move = (direction: -1 | 1) => scrollerRef.current?.scrollBy({ left: direction * scrollerRef.current.clientWidth, behavior: "smooth" });
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!scrollerRef.current) return;
@@ -55,14 +72,11 @@ export default function ProductScroller({
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-2xl font-bold">{title}</h2>
 
-        {viewAllHref && (
-          <Link
-            href={viewAllHref}
-            className="text-sm font-medium underline hover:no-underline"
-          >
-            {viewAllLabel}
-          </Link>
-        )}
+        <div className="flex items-center gap-2">
+          {viewAllHref && <Link href={viewAllHref} className="mr-2 text-sm font-medium underline hover:no-underline">{viewAllLabel}</Link>}
+          <Button variant="secondary" size="icon" disabled={!canPrevious} aria-label={`Previous ${title.toLowerCase()}`} onClick={() => move(-1)}><ChevronIcon className="h-5 w-5" /></Button>
+          <Button variant="secondary" size="icon" disabled={!canNext} aria-label={`Next ${title.toLowerCase()}`} onClick={() => move(1)}><ChevronIcon direction="right" className="h-5 w-5" /></Button>
+        </div>
       </div>
 
       <div
@@ -74,6 +88,7 @@ export default function ProductScroller({
         onMouseLeave={handleMouseLeave}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
+        onScroll={updateControls}
       >
         {products.map((product) => (
           <Link
