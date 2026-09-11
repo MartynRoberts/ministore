@@ -7,7 +7,6 @@ import ProductCard from "@/components/ProductCard";
 
 import ProductSortSelect from "@/components/ProductSortSelect";
 import Pagination from "@/components/Pagination";
-import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/FormControls";
 import { PageContainer } from "@/components/ui/Layout";
 import { LoadingIndicator } from "@/components/ui/LoadingIndicator";
@@ -22,7 +21,7 @@ export default function ProductListClient({ result, query }: Props) {
 
   const { search, category, sort, favsOnly } = query;
   const { items: pagedResults, page: clampedPage, totalPages, total: resultsCount } = result;
-  const { updateParam, clearFilters, pending } = useProductFilters();
+  const { updateParam, pending } = useProductFilters();
 
   const sortOptions = [
     { id: "relevance", name: "Relevance" },
@@ -52,26 +51,13 @@ export default function ProductListClient({ result, query }: Props) {
           <LoadingIndicator active={pending} label="Updating products" />
         </div>
 
-        <label>
-          Show favourites only{" "}
-          <input
-            type="checkbox"
-            onChange={(e) => updateParam("favs", e.target.checked ? "true" : "")}
-            checked={favsOnly}
+        <div className="ml-auto">
+          <ProductSortSelect
+            sortOptions={sortOptions}
+            value={sort}
+            onChange={(value: string) => updateParam("sort", value)}
           />
-        </label>
-
-        {(category || search || favsOnly) && (
-          <Button id="clear" variant="ghost" size="sm" onClick={clearFilters}>
-            Clear
-          </Button>
-        )}
-
-        <ProductSortSelect
-          sortOptions={sortOptions}
-          value={sort}
-          onChange={(value: string) => updateParam("sort", value)}
-        />
+        </div>
       </fieldset>
       {pagedResults.length === 0 &&
         (favsOnly ? (

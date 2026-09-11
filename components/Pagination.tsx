@@ -4,7 +4,7 @@ type PaginationProps = {
   updateParam: (
     key: string,
     value?: string,
-    options?: { replace?: boolean }
+    options?: { replace?: boolean },
   ) => void;
 };
 
@@ -53,7 +53,10 @@ export default function Pagination({
   const visiblePages = getVisiblePages();
 
   return (
-    <nav aria-label="Pagination" className="mt-4 flex items-center gap-2">
+    <nav
+      aria-label="Pagination"
+      className="mt-4 flex items-center justify-center gap-2"
+    >
       <Button
         variant="secondary"
         size="sm"
@@ -80,7 +83,7 @@ export default function Pagination({
           >
             {item}
           </Button>
-        )
+        ),
       )}
 
       <Button
