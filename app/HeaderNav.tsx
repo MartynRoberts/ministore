@@ -15,6 +15,14 @@ export default function HeaderNav() {
   const [departmentIndex, setDepartmentIndex] = useState<number | null>(null);
   const navRef = useRef<HTMLElement>(null);
   const burgerRef = useRef<HTMLButtonElement>(null);
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    requestAnimationFrame(() => {
+      mobilePanelRef.current?.querySelector<HTMLElement>("button, a")?.focus();
+    });
+  }, [menuOpen, mobileLevel, departmentIndex]);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -87,7 +95,7 @@ export default function HeaderNav() {
       </Link>
 
       {menuOpen && (
-        <div id="mobile-navigation" className="absolute left-0 right-0 top-full z-50 max-h-[calc(100vh-7rem)] overflow-y-auto border-y border-border bg-surface px-4 py-4 shadow-card xl:hidden">
+        <div ref={mobilePanelRef} id="mobile-navigation" className="absolute left-0 right-0 top-full z-50 max-h-[calc(100vh-7rem)] overflow-y-auto border-y border-border bg-surface px-4 py-4 shadow-card xl:hidden">
           <div className="mx-auto w-full max-w-content">
             {mobileLevel === "main" && (
               <div className="grid">

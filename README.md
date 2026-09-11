@@ -279,6 +279,20 @@ the separate Node suite is not included in the Jest percentage.
 - Product images remain remote DummyJSON assets and therefore require network
   access even when catalogue text uses the local snapshot.
 
+## Accessibility
+
+Mini Store targets WCAG 2.2 Level AA. The shared design system provides visible
+keyboard focus, labelled controls, accessible loading and error announcements,
+minimum control sizes, semantic page landmarks, a skip link, responsive reflow,
+and reduced-motion behaviour. Mobile navigation moves focus as users enter and
+leave menu levels, and Escape closes open navigation and restores trigger focus.
+
+Representative homepage, catalogue, product, basket, favourites, checkout,
+orders, and admin routes score 100 in Lighthouse accessibility audits. Automated
+results do not establish WCAG conformance on their own; releases should also be
+checked with keyboard-only navigation, browser zoom and a representative screen
+reader on supported browsers.
+
 ## Deployment
 
 Pushes to `main` trigger `.github/workflows/deploy.yml`, which builds and deploys

@@ -29,7 +29,7 @@ export default function CategoryScroller({ categories }: { categories: CategoryP
   return <section aria-labelledby="popular-categories-heading">
     <div className="mb-5 flex items-center justify-between gap-4">
       <h2 id="popular-categories-heading" className="text-2xl font-bold">Popular categories</h2>
-      <div className="flex gap-2" aria-label="Popular category controls">
+      <div className="flex gap-2" role="group" aria-label="Popular category controls">
         <Button variant="secondary" size="icon" disabled={!canPrevious} aria-label="Previous categories" onClick={() => move(-1)}><ChevronIcon className="h-5 w-5" /></Button>
         <Button variant="secondary" size="icon" disabled={!canNext} aria-label="Next categories" onClick={() => move(1)}><ChevronIcon direction="right" className="h-5 w-5" /></Button>
       </div>

@@ -11,7 +11,7 @@ export default function Error({
 }) {
   return (
     <PageContainer>
-      <h3>Unable to load basket</h3>
+      <h1 className="text-2xl font-bold">Unable to load basket</h1>
       <p>Error: {error.message}</p>
       <Button onClick={reset}>Try again</Button>
     </PageContainer>

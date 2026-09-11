@@ -4,7 +4,8 @@ import { Card, PageContainer } from "@/components/ui/Layout";
 export default function Loading() {
   return (
     <PageContainer>
-      <div className="mb-6" aria-label="Loading products" aria-busy="true">
+      <div className="mb-6" role="status" aria-label="Loading products" aria-busy="true">
+        <span className="sr-only">Loading products</span>
         <Skeleton className="h-9 w-64 max-w-full" />
         <Skeleton className="mt-3 h-5 w-80 max-w-full" />
       </div>

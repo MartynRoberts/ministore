@@ -4,7 +4,8 @@ import { Card, PageContainer } from "@/components/ui/Layout";
 export default function CollectionPageSkeleton({ label }: { label: string }) {
   return (
     <PageContainer>
-      <div aria-label={label} aria-busy="true">
+      <div role="status" aria-label={label} aria-busy="true">
+        <span className="sr-only">{label}</span>
         <Skeleton className="h-7 w-36" />
         <Card className="mt-8 px-5 py-10 sm:py-14">
           <Skeleton className="mx-auto h-16 w-16 rounded-full" />
