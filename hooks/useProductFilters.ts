@@ -20,11 +20,5 @@ export function useProductFilters() {
     if (key !== "page") next.delete("page");
     navigate(next, options?.replace);
   };
-  const clearFilters = () => {
-    const next = new URLSearchParams();
-    const sort = searchParams.get("sort");
-    if (sort) next.set("sort", sort);
-    navigate(next);
-  };
-  return { updateParam, clearFilters, pending };
+  return { updateParam, pending };
 }
