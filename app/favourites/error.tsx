@@ -11,6 +11,7 @@ export default function Error({
 }) {
   return (
     <PageContainer>
+      <h1 className="text-2xl font-bold">Unable to load favourites</h1>
       <p>Error: {error.message}</p>
       <Button onClick={reset}>Try again</Button>
     </PageContainer>

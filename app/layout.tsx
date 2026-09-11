@@ -54,6 +54,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className="bg-canvas text-text">
+        <a
+          href="#main-content"
+          className="fixed left-4 top-4 z-[200] -translate-y-24 rounded-md bg-primary px-4 py-3 font-semibold text-on-primary transition-transform focus:translate-y-0 focus:outline-2 focus:outline-offset-2 focus:outline-focus motion-reduce:transition-none"
+        >
+          Skip to main content
+        </a>
         <UmamiAnalytics />
         <script
           type="application/ld+json"
@@ -86,7 +92,7 @@ export default async function RootLayout({
               </div>
             </header>
 
-            <main className="w-full flex-1">{children}</main>
+            <main id="main-content" className="w-full flex-1">{children}</main>
 
             <SiteFooter />
           </div>

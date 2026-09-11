@@ -71,7 +71,7 @@ export default function HeaderSearch() {
         />
       </form>
       {isOpen && eligible && (
-        <div id="product-suggestions" className="absolute left-0 right-0 top-full z-50 mt-2 rounded-lg border border-border bg-surface p-3 shadow-card">
+        <div id="product-suggestions" role="region" aria-label="Product search suggestions" className="absolute left-0 right-0 top-full z-50 mt-2 rounded-lg border border-border bg-surface p-3 shadow-card">
           <div className="flex min-h-5 items-center gap-2 text-sm text-text-muted">
             <LoadingIndicator active={loading} label="Searching products" />
             {!loading && <p role="status">{current?.error ?? (current?.items.length ? "Suggested products" : `No suggestions for “${trimmed}”`)}</p>}

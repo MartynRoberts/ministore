@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { ChevronIcon } from "@/components/ui/ChevronIcon";
 
@@ -40,6 +42,17 @@ export default function SiteFooter() {
   return (
     <footer className="w-full bg-primary text-on-primary">
       <div className="mx-auto w-full max-w-content px-4 py-4 md:py-16">
+        <div
+          id="footer-demo-note"
+          className="mb-6 rounded-md border border-on-primary/30 bg-on-primary/10 p-3 text-sm"
+        >
+          <strong>Demo navigation</strong>
+          <span className="ml-1 opacity-90">
+            These dummy links illustrate the content a complete ecommerce footer
+            would include.
+          </span>
+        </div>
+
         {/* Desktop / tablet */}
         <div className="hidden md:grid md:grid-cols-4 md:gap-16">
           {footerColumns.map((column) => (
@@ -51,6 +64,8 @@ export default function SiteFooter() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
+                      aria-describedby="footer-demo-note"
+                      onClick={(event) => event.preventDefault()}
                       className="opacity-80 transition hover:opacity-100 hover:underline"
                     >
                       {link.label}
@@ -72,7 +87,10 @@ export default function SiteFooter() {
               <summary className="flex items-center justify-between py-2 text-lg font-semibold cursor-pointer">
                 {column.title}
 
-                <ChevronIcon direction="down" className="h-4 w-4 transition-transform group-open:rotate-180" />
+                <ChevronIcon
+                  direction="down"
+                  className="h-4 w-4 transition-transform group-open:rotate-180"
+                />
               </summary>
 
               <ul className="my-3 space-y-2">
@@ -80,6 +98,8 @@ export default function SiteFooter() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
+                      aria-describedby="footer-demo-note"
+                      onClick={(event) => event.preventDefault()}
                       className="opacity-80 transition hover:opacity-100"
                     >
                       {link.label}

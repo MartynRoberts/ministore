@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import HeaderNav from "@/app/HeaderNav";
 
@@ -15,6 +15,7 @@ describe("HeaderNav", () => {
     await user.click(screen.getByRole("button", { name: "Open menu" }));
     expect(screen.getByRole("button", { name: "Close menu" })).toHaveAttribute("aria-expanded", "true");
     expect(screen.getByRole("button", { name: "Shop" })).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByRole("button", { name: "Shop" })).toHaveFocus());
   });
 
   test("drills from Shop into a department and back through each level", async () => {
@@ -26,10 +27,12 @@ describe("HeaderNav", () => {
     expect(screen.getByRole("heading", { name: "Shop" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Technology/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Back to menu" })).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByRole("button", { name: "Back to menu" })).toHaveFocus());
 
     await user.click(screen.getByRole("button", { name: /Technology/ }));
     expect(screen.getByRole("heading", { name: "Technology" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Smartphones" })).toHaveAttribute("href", "/products?category=smartphones");
+    await waitFor(() => expect(screen.getByRole("button", { name: "Back to departments" })).toHaveFocus());
 
     await user.click(screen.getByRole("button", { name: "Back to departments" }));
     expect(screen.getByRole("heading", { name: "Shop" })).toBeInTheDocument();
