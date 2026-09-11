@@ -37,7 +37,6 @@ export default function BasketClient({ recommendations }: { recommendations: Pro
       {recommendations.length > 0 && <section className="mt-12" aria-labelledby="basket-recommendations-heading">
         <div className="mb-5 flex items-end justify-between gap-4">
           <div><h2 id="basket-recommendations-heading" className="text-2xl font-bold">You might also like</h2><p className="mt-1 text-text-muted">Popular picks from Mini Store</p></div>
-          <Link href="/products" className="shrink-0 font-semibold underline hover:no-underline">View all</Link>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {recommendations.map((product, index) => <ProductCard key={product.id} product={product} preloadImage={index === 0} isFav={favs.includes(product.id)} onToggleFav={toggleFav} onAddToBasket={addToBasket} />)}
