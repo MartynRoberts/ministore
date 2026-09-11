@@ -270,7 +270,6 @@ export default function ProductInformation({
       <ProductScroller
         title="You may also like"
         products={recommendations}
-        viewAllHref="/products"
       />
     </PageContainer>
   );

@@ -15,24 +15,23 @@ type Props = {
   viewAllLabel?: string;
 };
 
-export default function ProductScroller({
-  title,
-  products,
-  viewAllHref,
-  viewAllLabel = "View all",
-}: Props) {
+export default function ProductScroller({ title, products, viewAllHref, viewAllLabel = "View all" }: Props) {
   const scrollerRef = useRef<HTMLDivElement>(null);
 
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [canPrevious, setCanPrevious] = useState(false);
-  const [canNext, setCanNext] = useState(products.length > 1);
+  const [canNext, setCanNext] = useState(false);
+  const [hasOverflow, setHasOverflow] = useState(false);
   const updateControls = () => {
     const element = scrollerRef.current;
     if (!element) return;
+    setHasOverflow(element.scrollWidth > element.clientWidth + 1);
     setCanPrevious(element.scrollLeft > 1);
-    setCanNext(element.scrollLeft + element.clientWidth < element.scrollWidth - 1);
+    setCanNext(
+      element.scrollLeft + element.clientWidth < element.scrollWidth - 1,
+    );
   };
   useEffect(() => {
     updateControls();
@@ -40,7 +39,11 @@ export default function ProductScroller({
     if (scrollerRef.current) observer.observe(scrollerRef.current);
     return () => observer.disconnect();
   }, [products.length]);
-  const move = (direction: -1 | 1) => scrollerRef.current?.scrollBy({ left: direction * scrollerRef.current.clientWidth, behavior: "smooth" });
+  const move = (direction: -1 | 1) =>
+    scrollerRef.current?.scrollBy({
+      left: direction * scrollerRef.current.clientWidth,
+      behavior: "smooth",
+    });
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!scrollerRef.current) return;
@@ -75,8 +78,28 @@ export default function ProductScroller({
 
         <div className="flex items-center gap-2">
           {viewAllHref && <Link href={viewAllHref} className="mr-2 text-sm font-medium underline hover:no-underline">{viewAllLabel}</Link>}
-          <Button variant="secondary" size="icon" disabled={!canPrevious} aria-label={`Previous ${title.toLowerCase()}`} onClick={() => move(-1)}><ChevronIcon className="h-5 w-5" /></Button>
-          <Button variant="secondary" size="icon" disabled={!canNext} aria-label={`Next ${title.toLowerCase()}`} onClick={() => move(1)}><ChevronIcon direction="right" className="h-5 w-5" /></Button>
+          {hasOverflow && (
+            <Button
+              variant="secondary"
+              size="icon"
+              disabled={!canPrevious}
+              aria-label={`Previous ${title.toLowerCase()}`}
+              onClick={() => move(-1)}
+            >
+              <ChevronIcon className="h-5 w-5" />
+            </Button>
+          )}
+          {hasOverflow && (
+            <Button
+              variant="secondary"
+              size="icon"
+              disabled={!canNext}
+              aria-label={`Next ${title.toLowerCase()}`}
+              onClick={() => move(1)}
+            >
+              <ChevronIcon direction="right" className="h-5 w-5" />
+            </Button>
+          )}
         </div>
       </div>
 

@@ -11,10 +11,12 @@ export type CategoryPreview = { slug: string; title: string; image: string };
 export default function CategoryScroller({ categories }: { categories: CategoryPreview[] }) {
   const scroller = useRef<HTMLDivElement>(null);
   const [canPrevious, setCanPrevious] = useState(false);
-  const [canNext, setCanNext] = useState(categories.length > 1);
+  const [canNext, setCanNext] = useState(false);
+  const [hasOverflow, setHasOverflow] = useState(false);
   const updateControls = () => {
     const element = scroller.current;
     if (!element) return;
+    setHasOverflow(element.scrollWidth > element.clientWidth + 1);
     setCanPrevious(element.scrollLeft > 1);
     setCanNext(element.scrollLeft + element.clientWidth < element.scrollWidth - 1);
   };
@@ -30,8 +32,8 @@ export default function CategoryScroller({ categories }: { categories: CategoryP
     <div className="mb-5 flex items-center justify-between gap-4">
       <h2 id="popular-categories-heading" className="text-2xl font-bold">Popular categories</h2>
       <div className="flex gap-2" role="group" aria-label="Popular category controls">
-        <Button variant="secondary" size="icon" disabled={!canPrevious} aria-label="Previous categories" onClick={() => move(-1)}><ChevronIcon className="h-5 w-5" /></Button>
-        <Button variant="secondary" size="icon" disabled={!canNext} aria-label="Next categories" onClick={() => move(1)}><ChevronIcon direction="right" className="h-5 w-5" /></Button>
+        {hasOverflow && <Button variant="secondary" size="icon" disabled={!canPrevious} aria-label="Previous categories" onClick={() => move(-1)}><ChevronIcon className="h-5 w-5" /></Button>}
+        {hasOverflow && <Button variant="secondary" size="icon" disabled={!canNext} aria-label="Next categories" onClick={() => move(1)}><ChevronIcon direction="right" className="h-5 w-5" /></Button>}
       </div>
     </div>
     <div ref={scroller} onScroll={updateControls} className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3" tabIndex={0} aria-label="Popular categories">
