@@ -46,7 +46,7 @@ server-calculated prices, and shared inventory before creating an order.
 | Framework | Next.js 16 App Router and React 19 |
 | Language | TypeScript, with a small amount of legacy JavaScript |
 | Styling | Tailwind CSS 4 and semantic CSS custom properties |
-| Persistence | Node SQLite through `node:sqlite` |
+| Persistence | Neon Postgres in production, with Node SQLite for local development and tests |
 | Product feed | Normalized DummyJSON with a local fallback |
 | Mutations | Next.js Server Actions |
 | Component tests | Jest, JSDOM, and React Testing Library |
@@ -71,7 +71,7 @@ Clothing categories expose MiniStore-owned S, M, L, and XL variants; other
 products use a Standard variant. Each variant is stored as an independent basket
 line.
 
-Basket data, favourites, and delivery preference persist in SQLite behind an
+Basket data, favourites, and delivery preference persist in Postgres behind an
 opaque 30-day HTTP-only session cookie. The server recalculates every quote from
 the current catalogue. Monetary values are stored as integer pence, with GBP as
 the display currency. Standard delivery is £3.50 and becomes free at £100;
@@ -209,7 +209,9 @@ Create `.env.local`:
 
 ```dotenv
 MINISTORE_ADMIN_PASSWORD=password
-# Optional; defaults to .data/ministore.sqlite
+# Use Neon Postgres when set. Prefer Neon's pooled connection string.
+DATABASE_URL=postgresql://user:password@host/database?sslmode=require
+# Optional SQLite fallback when DATABASE_URL is omitted
 MINISTORE_DB_PATH=.data/ministore.sqlite
 # Optional locally; set to the public origin for canonical and sitemap URLs
 NEXT_PUBLIC_SITE_URL=https://example.com
@@ -225,8 +227,19 @@ Start the development server:
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). SQLite tables and the local
-database file are created lazily on the first state-changing request.
+Open [http://localhost:3000](http://localhost:3000). Database tables are created
+lazily. Omit `DATABASE_URL` to use the local SQLite fallback.
+
+## Neon production database
+
+Create a Neon project and copy its pooled connection string. In Vercel, add it
+as a sensitive `DATABASE_URL` environment variable for Production (and Preview
+if desired), then redeploy. The application creates its tables and indexes on
+the first database-backed request; no separate migration command is required.
+
+Do not configure `MINISTORE_DB_PATH` on Vercel. The deployed application
+filesystem is read-only and `/tmp` storage is ephemeral, while Neon provides
+persistent state shared by all serverless instances.
 
 ## Testing and quality checks
 

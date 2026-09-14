@@ -12,7 +12,11 @@ function load(file, imports = {}, globals = {}) {
 }
 const basket = load('lib/basket.ts');
 const checkout = load('lib/checkout.ts', { './basket': basket });
-const storage = load('lib/shop-store.ts', { './basket': basket, './order-status': load('lib/order-status.ts') });
+const storage = load('lib/shop-store.ts', {
+  './basket': basket,
+  './order-status': load('lib/order-status.ts'),
+  './neon-shop-store': { openNeonShopStore: () => { throw new Error('Neon is not used by SQLite tests'); } },
+});
 const product = { id: 1, title: 'Shirt', description: '', category: 'mens-shirts', image: 'x', price: 20, stock: 10 };
 const customer = { name: 'Demo Shopper', email: 'demo@example.com', address: '1 Example Road', city: 'London', postcode: 'SW1A 1AA' };
 function setup() {

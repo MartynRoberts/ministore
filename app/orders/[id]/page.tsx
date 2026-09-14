@@ -38,7 +38,7 @@ export default async function OrderPage({
   const sessionId = await getCurrentSessionId();
   if (!sessionId) notFound();
   const { id } = await params;
-  const order = getShopStore().getOrder(sessionId, id);
+  const order = await getShopStore().getOrder(sessionId, id);
   if (!order) notFound();
 
   const status = order.status ?? "pending";

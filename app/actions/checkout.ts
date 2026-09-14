@@ -15,9 +15,9 @@ export async function placeOrder(_previous: CheckoutState, form: FormData): Prom
   const checkoutId = form.get("checkoutId");
   if (typeof checkoutId !== "string" || checkoutId.length > 100) return { error: "Invalid checkout. Please reload this page." };
   const store = getShopStore();
-  const existing = store.orderForCheckout(sessionId, checkoutId);
+  const existing = await store.orderForCheckout(sessionId, checkoutId);
   if (existing) redirect(`/orders/${existing.id}`);
-  const draft = store.getCheckout(sessionId, checkoutId);
+  const draft = await store.getCheckout(sessionId, checkoutId);
   if (!draft || draft.expiresAt < Date.now()) return { error: "This checkout has expired. Return to your basket to reserve the items again." };
   let customer;
   try { customer = parseCustomer(form); } catch (error) {
@@ -27,13 +27,13 @@ export async function placeOrder(_previous: CheckoutState, form: FormData): Prom
   const payment = form.get("payment");
   if (payment !== "approve" && payment !== "decline" && payment !== "pending") return { error: "Choose a simulated payment outcome." };
   let products;
-  try { products = store.localProducts(await getCheckoutProducts(), checkoutId); } catch {
-    store.releaseCheckout(sessionId, checkoutId);
+  try { products = await store.localProducts(await getCheckoutProducts(), checkoutId); } catch {
+    await store.releaseCheckout(sessionId, checkoutId);
     return { error: "We cannot verify current prices and stock. Please try again shortly." };
   }
   let order;
   try {
-    order = store.placeOrder(sessionId, checkoutId, shop => {
+    order = await store.placeOrder(sessionId, checkoutId, shop => {
       if (draft.expiresAt < Date.now()) throw new Error("This checkout has expired. Please reload this page.");
       const quote = validateCheckout(shop, products);
       if (fingerprint(quote) !== draft.fingerprint) throw new Error("Your basket or its prices have changed. Reload checkout to review the updated total.");
@@ -41,7 +41,7 @@ export async function placeOrder(_previous: CheckoutState, form: FormData): Prom
       return { id: randomUUID(), createdAt: new Date().toISOString(), customer, quote, paymentStatus: payment === "pending" ? "simulated-pending" as const : "simulated-paid" as const };
     });
   } catch (error) {
-    store.releaseCheckout(sessionId, checkoutId);
+    await store.releaseCheckout(sessionId, checkoutId);
     return { error: error instanceof Error ? error.message : "We could not place your order. Please try again." };
   }
   revalidatePath("/", "layout");
@@ -58,11 +58,11 @@ export async function beginCheckout(): Promise<CheckoutState> {
   }
   let id;
   try {
-    store.seedInventory(products);
-    const quote = quoteBasket(store.read(sessionId), products);
+    await store.seedInventory(products);
+    const quote = quoteBasket(await store.read(sessionId), products);
     if (!quote.canCheckout) return { error: "Your basket is empty or contains unavailable items." };
     const draft = createCheckoutDraft(quote);
-    store.createCheckout(sessionId, draft);
+    await store.createCheckout(sessionId, draft);
     id = draft.id;
   } catch (error) { return { error: error instanceof Error ? error.message : "Unable to reserve stock." }; }
   redirect(`/checkout?id=${id}`);

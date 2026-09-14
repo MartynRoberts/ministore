@@ -13,7 +13,11 @@ function load(file, imports = {}) {
   return exports;
 }
 const basket = load('lib/basket.ts');
-const storage = load('lib/shop-store.ts', { './basket': basket, './order-status': load('lib/order-status.ts') });
+const storage = load('lib/shop-store.ts', {
+  './basket': basket,
+  './order-status': load('lib/order-status.ts'),
+  './neon-shop-store': { openNeonShopStore: () => { throw new Error('Neon is not used by SQLite tests'); } },
+});
 const product = { id: 1, title: 'Shirt', category: 'mens-shirts', description: '', image: 'shirt.jpg', price: 19.99 };
 const variants = basket.getVariants(product);
 
