@@ -111,8 +111,16 @@ export function openNeonShopStore(connectionString: string, now = Date.now) {
       return transaction(async db => {
         for (const product of products) {
           if (!Number.isSafeInteger(product.stock) || product.stock < 0) throw new Error("Invalid stock seed.");
-          await db.query("INSERT INTO inventory (product_id, title, stock) VALUES ($1, $2, $3) ON CONFLICT(product_id) DO NOTHING", [product.id, product.title, product.stock]);
         }
+        if (!products.length) return;
+        await db.query(`INSERT INTO inventory (product_id, title, stock)
+          SELECT product_id, title, stock
+          FROM jsonb_to_recordset($1::jsonb) AS product(product_id INTEGER, title TEXT, stock INTEGER)
+          ON CONFLICT(product_id) DO NOTHING`, [JSON.stringify(products.map(product => ({
+          product_id: product.id,
+          title: product.title,
+          stock: product.stock,
+        })))]);
       });
     },
     async inventory() { return transaction(async db => { await expireTx(db); return inventoryTx(db); }); },
@@ -151,10 +159,14 @@ export function openNeonShopStore(connectionString: string, now = Date.now) {
         const quantities = new Map<number, number>();
         for (const line of draft.quote.lines) quantities.set(line.productId, (quantities.get(line.productId) ?? 0) + line.quantity);
         const stock = await inventoryTx(db);
+        const reservations = [];
         for (const [id, quantity] of quantities) {
           if ((stock.find(row => row.productId === id)?.available ?? 0) < quantity) throw new Error("Insufficient local stock. Please adjust your basket.");
-          await db.query("INSERT INTO reservations (checkout_id, session_id, product_id, quantity, expires_at, status) VALUES ($1,$2,$3,$4,$5,'held')", [draft.id, sessionId, id, quantity, draft.expiresAt]);
+          reservations.push({ checkout_id: draft.id, session_id: sessionId, product_id: id, quantity, expires_at: draft.expiresAt });
         }
+        await db.query(`INSERT INTO reservations (checkout_id, session_id, product_id, quantity, expires_at, status)
+          SELECT checkout_id, session_id, product_id, quantity, expires_at, 'held'
+          FROM jsonb_to_recordset($1::jsonb) AS reservation(checkout_id TEXT, session_id TEXT, product_id INTEGER, quantity INTEGER, expires_at BIGINT)`, [JSON.stringify(reservations)]);
         await db.query("INSERT INTO checkout_drafts (id, session_id, data) VALUES ($1,$2,$3::jsonb)", [draft.id, sessionId, JSON.stringify(draft)]);
       });
     },
