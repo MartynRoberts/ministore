@@ -39,19 +39,27 @@ export default function ProductListClient({ result, query }: Props) {
         </h1>
         <p className="mt-2 text-text-muted">Browse and compare products, prices and availability.</p>
       </div>
-      <fieldset disabled={pending} className="flex flex-wrap items-center gap-3 mb-3">
-        <Select aria-label="Category" value={category} onChange={(event) => updateParam("category", event.target.value)} className="w-auto">
+      <fieldset
+        disabled={pending}
+        className="mb-4 grid grid-cols-2 items-center gap-3 sm:grid-cols-[auto_1fr_auto]"
+      >
+        <Select
+          aria-label="Category"
+          value={category}
+          onChange={(event) => updateParam("category", event.target.value)}
+          className="col-start-1 row-start-2 w-full sm:row-start-1 sm:w-auto"
+        >
           <option value="">All categories</option>
           {category && !result.facets.categories.some(facet => facet.value === category) && <option value={category}>{category} (0)</option>}
           {result.facets.categories.map(facet => <option key={facet.value} value={facet.value}>{facet.value.replaceAll("-", " ")} ({facet.count})</option>)}
         </Select>
 
-        <div className="flex items-center gap-2">
-          <p className="m-0 opacity-80">{resultsCount} results</p>
+        <div className="col-span-2 row-start-1 flex min-h-6 items-center gap-2 sm:col-span-1 sm:col-start-2">
+          <p className="m-0 text-sm text-text-muted sm:text-base">{resultsCount} results</p>
           <LoadingIndicator active={pending} label="Updating products" />
         </div>
 
-        <div className="ml-auto">
+        <div className="col-start-2 row-start-2 min-w-0 sm:col-start-3 sm:row-start-1">
           <ProductSortSelect
             sortOptions={sortOptions}
             value={sort}
