@@ -37,7 +37,7 @@ async function changeOrder(form: FormData, sessionId?: string): Promise<Result> 
     const id = form.get("id");
     if (typeof id !== "string" || id.length > 100) throw new Error("Invalid order.");
     const target = sessionId === undefined ? status(form.get("status")) : "cancelled";
-    getShopStore().transitionOrder(id, target, status(form.get("expected")), sessionId);
+    await getShopStore().transitionOrder(id, target, status(form.get("expected")), sessionId);
     revalidatePath("/", "layout");
     return { success: "Order updated." };
   } catch (error) { return { error: error instanceof Error ? error.message : "Unable to update order." }; }
@@ -54,7 +54,7 @@ export async function updateInventory(_previous: Result, form: FormData): Promis
     return Number(value);
   };
   try {
-    getShopStore().updateInventoryStock(integer("productId"), integer("stock"), integer("expectedStock"));
+    await getShopStore().updateInventoryStock(integer("productId"), integer("stock"), integer("expectedStock"));
     revalidatePath("/admin/orders");
     return { success: "Stock updated." };
   } catch (error) {

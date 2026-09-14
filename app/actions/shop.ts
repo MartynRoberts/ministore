@@ -24,11 +24,11 @@ async function present(shop: StoredShop): Promise<ShopSession> {
 }
 export async function getShopSession(): Promise<ShopSession> {
   const id = await sessionId();
-  return present(id ? getShopStore().read(id) : emptyShop());
+  return present(id ? await getShopStore().read(id) : emptyShop());
 }
 async function mutate(change: (shop: StoredShop) => void) {
   const id = await sessionId(true);
-  const shop = getShopStore().update(id!, change);
+  const shop = await getShopStore().update(id!, change);
   revalidatePath("/", "layout");
   return present(shop);
 }
@@ -42,7 +42,7 @@ export async function setBasketQty(variantId: string, quantity: number) {
   validateQuantity(quantity);
   const id = await sessionId();
   if (!id) throw new Error("Your basket is empty.");
-  const line = getShopStore().read(id).lines.find(line => line.variantId === variantId);
+  const line = (await getShopStore().read(id)).lines.find(line => line.variantId === variantId);
   if (!line) throw new Error("This item is no longer in your basket.");
   // Removal must also work for products no longer in the catalogue.
   if (quantity === 0) return mutate(shop => { shop.lines = shop.lines.filter(line => line.variantId !== variantId); });

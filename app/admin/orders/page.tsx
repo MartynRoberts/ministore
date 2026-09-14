@@ -13,12 +13,12 @@ export default async function AdminOrdersPage() {
   const store = getShopStore();
   let inventoryWarning = "";
   try {
-    store.seedInventory(await getCheckoutProducts());
+    await store.seedInventory(await getCheckoutProducts());
   } catch {
     inventoryWarning = "Supplier stock could not be loaded. Existing local inventory is still available.";
   }
-  const orders = store.listOrders();
-  const inventory = store.inventory();
+  const orders = await store.listOrders();
+  const inventory = await store.inventory();
   return <PageContainer className="max-w-5xl">
     <div className="flex justify-between"><h1 className="text-2xl font-bold">Order management</h1><form action={logoutAdmin}><Button type="submit" variant="ghost" size="sm">Sign out</Button></form></div>
     <p className="my-4">Demo payments and fulfilment. Showing the most recent 200 orders.</p>

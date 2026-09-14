@@ -4,6 +4,7 @@ import { dirname, resolve } from "node:path";
 import { emptyShop, type StoredShop } from "./basket";
 import type { CheckoutDraft, CheckoutProduct, Order } from "./checkout";
 import { orderTransitions, type OrderStatus } from "./order-status";
+import { openNeonShopStore } from "./neon-shop-store";
 
 export function openShopStore(filename: string, now = Date.now) {
   if (filename !== ":memory:") mkdirSync(dirname(filename), { recursive: true });
@@ -185,7 +186,12 @@ export function openShopStore(filename: string, now = Date.now) {
     close: () => db.close(),
   };
 }
-let store: ReturnType<typeof openShopStore> | undefined;
+let store: ReturnType<typeof openShopStore> | ReturnType<typeof openNeonShopStore> | undefined;
 export function getShopStore() {
-  return store ??= openShopStore(resolve(/* turbopackIgnore: true */ process.env.MINISTORE_DB_PATH ?? ".data/ministore.sqlite"));
+  if (store) return store;
+  const databaseUrl = process.env.DATABASE_URL;
+  store = databaseUrl
+    ? openNeonShopStore(databaseUrl)
+    : openShopStore(resolve(/* turbopackIgnore: true */ process.env.MINISTORE_DB_PATH ?? ".data/ministore.sqlite"));
+  return store;
 }

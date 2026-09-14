@@ -9,7 +9,7 @@ import { buttonStyles } from "@/components/ui/Button";
 export default async function CheckoutPage({ searchParams }: { searchParams: Promise<{ id?: string }> }) {
   const sessionId = await getCurrentSessionId();
   const { id } = await searchParams;
-  const draft = sessionId && id ? getShopStore().getCheckout(sessionId, id) : null;
+  const draft = sessionId && id ? await getShopStore().getCheckout(sessionId, id) : null;
   if (!draft) return <PageContainer>
     <section className="mx-auto grid max-w-5xl overflow-hidden rounded-lg border border-warning bg-surface lg:grid-cols-2">
       <div className="flex flex-col justify-center bg-surface-muted px-6 py-10 text-center sm:px-10 sm:py-14 lg:min-h-[32rem]">
