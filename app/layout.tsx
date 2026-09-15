@@ -10,6 +10,7 @@ import { BrandLogo } from "@/components/ui/BrandLogo";
 import ProductNav from "./ProductNav";
 import { getSiteUrl } from "@/lib/site-url";
 import UmamiAnalytics from "@/components/UmamiAnalytics";
+import BackToTopButton from "@/components/BackToTopButton";
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
@@ -95,6 +96,7 @@ export default async function RootLayout({
             <main id="main-content" className="w-full flex-1">{children}</main>
 
             <SiteFooter />
+            <BackToTopButton />
           </div>
         </ShopProvider>
       </body>
