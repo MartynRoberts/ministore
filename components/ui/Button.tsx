@@ -5,10 +5,14 @@ type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 type ButtonSize = "sm" | "md" | "lg" | "icon";
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: "border border-primary bg-primary text-on-primary no-underline shadow-button hover:bg-primary-hover hover:shadow-button-hover",
-  secondary: "border-2 border-primary bg-surface text-text no-underline shadow-button hover:bg-primary hover:text-on-primary hover:shadow-button-hover",
-  ghost: "border border-transparent bg-transparent text-text underline underline-offset-4 hover:bg-surface-muted",
-  danger: "border border-danger bg-danger text-on-primary no-underline shadow-button hover:opacity-90 hover:shadow-button-hover",
+  primary:
+    "border border-primary bg-primary text-on-primary no-underline shadow-button hover:bg-primary-hover hover:shadow-button-hover",
+  secondary:
+    "border-2 border-primary bg-surface text-text no-underline shadow-button hover:bg-primary hover:text-on-primary hover:shadow-button-hover",
+  ghost:
+    "border border-transparent bg-transparent text-text underline underline-offset-4 hover:bg-surface-muted",
+  danger:
+    "border border-danger bg-danger text-on-primary no-underline shadow-button hover:opacity-90 hover:shadow-button-hover",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -18,7 +22,11 @@ const sizeClasses: Record<ButtonSize, string> = {
   icon: "h-11 w-11 p-0",
 };
 
-export function buttonStyles({ variant = "primary", size = "md", className = "" }: {
+export function buttonStyles({
+  variant = "primary",
+  size = "md",
+  className = "",
+}: {
   variant?: ButtonVariant;
   size?: ButtonSize;
   className?: string;
@@ -33,11 +41,22 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   loadingLabel?: string;
 };
 
-export function Button({ variant, size, className, type = "button", loading = false, loadingLabel = "Loading", children, disabled, "aria-label": ariaLabel, ...props }: ButtonProps) {
+export function Button({
+  variant,
+  size,
+  className,
+  type = "button",
+  loading = false,
+  loadingLabel = "Loading",
+  children,
+  disabled,
+  "aria-label": ariaLabel,
+  ...props
+}: ButtonProps) {
   return (
     <button
       type={type}
-      className={`${buttonStyles({ variant, size, className })} relative`}
+      className={`${buttonStyles({ variant, size, className })} relative bg-blue-500`}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       aria-label={loading ? loadingLabel : ariaLabel}

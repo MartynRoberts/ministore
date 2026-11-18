@@ -43,3 +43,6 @@ next-env.d.ts
 
 # Local persistent shop database
 /.data/
+
+*storybook.log
+storybook-static
