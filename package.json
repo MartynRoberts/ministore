@@ -11,7 +11,10 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:server": "node --test tests/api.test.cjs tests/basket.test.cjs tests/checkout.test.cjs",
-    "test:ci": "npm run test:server && jest --ci --coverage --runInBand"
+    "test:ci": "npm run test:server && jest --ci --coverage --runInBand",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "chromatic": "npx chromatic --project-token=chpt_77b8b42bb9858b7"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
@@ -22,6 +25,12 @@
     "ws": "^8.21.3"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "latest",
+    "@storybook/addon-a11y": "^10.6.7",
+    "@storybook/addon-docs": "^10.6.7",
+    "@storybook/addon-mcp": "^10.6.7",
+    "@storybook/addon-vitest": "^10.6.7",
+    "@storybook/nextjs-vite": "^10.6.7",
     "@tailwindcss/postcss": "^4.2.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
@@ -31,14 +40,30 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/ws": "^8.18.1",
+    "@vitest/browser-playwright": "latest",
+    "@vitest/coverage-v8": "latest",
+    "chromatic": "^18.14.6",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "eslint-plugin-storybook": "^10.6.7",
     "jest": "^30.5.1",
     "jest-environment-jsdom": "^30.5.1",
+    "mockdate": "^3.0.5",
+    "msw": "^3.0.6",
+    "msw-storybook-addon": "^3.0.3",
+    "playwright": "latest",
+    "storybook": "^10.6.7",
     "tailwindcss": "^4.2.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite": "latest",
+    "vitest": "latest"
   },
   "engines": {
     "node": ">=24.0.0"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
